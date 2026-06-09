@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Streamlit secrets (JANGAN PERNAH push ke GitHub!)
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+~$*
+
+# Scratch/test files
+scratch/
+test.csv
+test_*.py
+test_*.pdf
+
+# Generated documents (optional - hapus jika ingin menyimpan)
+*.docx
+*.pptx
+
+# Gemini
+.gemini/

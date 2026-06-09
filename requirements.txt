@@ -1,0 +1,9 @@
+streamlit
+pandas
+numpy
+openai
+fpdf
+openpyxl
+plotly
+st-gsheets-connection
+matplotlib
