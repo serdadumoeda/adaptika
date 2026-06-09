@@ -6,15 +6,7 @@ class DatabaseManager:
     """Abstraksi operasi database untuk koneksi Google Sheets secara persisten"""
     
     def __init__(self):
-        # 1. Tarik rahasia (secrets) GSheets
-        gsheets_secrets = dict(st.secrets["connections"]["gsheets"])
-        
-        # 2. Perbaiki private_key secara terprogram
-        # Jika private_key memuat teks harfiah "\n" (bukan newline asli), kita perbaiki
-        fixed_key = gsheets_secrets.get("private_key", "").replace("\\n", "\n")
-            
-        # 3. Buat koneksi dengan menimpa nilai private_key saja
-        self.conn = st.connection("gsheets", type=GSheetsConnection, private_key=fixed_key)
+        self.conn = st.connection("gsheets", type=GSheetsConnection)
     @st.cache_data(ttl="10m")
     def fetch_all_data(_self) -> pd.DataFrame:
         """Mengambil seluruh data peserta dan me-load ke Pandas DataFrame"""
