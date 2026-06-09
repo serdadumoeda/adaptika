@@ -11,11 +11,10 @@ class DatabaseManager:
         
         # 2. Perbaiki private_key secara terprogram
         # Jika private_key memuat teks harfiah "\n" (bukan newline asli), kita perbaiki
-        if "private_key" in gsheets_secrets:
-            gsheets_secrets["private_key"] = gsheets_secrets["private_key"].replace("\\n", "\n")
+        fixed_key = gsheets_secrets.get("private_key", "").replace("\\n", "\n")
             
-        # 3. Buat koneksi dengan credentials yang sudah diperbaiki
-        self.conn = st.connection("gsheets", type=GSheetsConnection, **gsheets_secrets)
+        # 3. Buat koneksi dengan menimpa nilai private_key saja
+        self.conn = st.connection("gsheets", type=GSheetsConnection, private_key=fixed_key)
     @st.cache_data(ttl="10m")
     def fetch_all_data(_self) -> pd.DataFrame:
         """Mengambil seluruh data peserta dan me-load ke Pandas DataFrame"""
