@@ -9,7 +9,7 @@ def call_ai_guardrailed(prompt_spesifik, role_konteks, riwayat_intervensi=None):
         system_prompt = f"""
         Anda adalah ADAPTIKA API. Berikan respons dalam format JSON murni.
         Konteks: Penyusunan Suplemen Kompetensi Talenta (ADAPTIKA Career Passport).
-        - Gunakan bahasa psikologi positif, profesional, dan berfokus pada "Growth Mindset".
+        - Gunakan bahasa pendampingan yang memberdayakan, profesional, dan berfokus pada "Growth Mindset".
         - DILARANG KERAS menggunakan istilah teknis seperti 'Kuadran', 'Krisis Ganda', 'Mismatch', atau menyebut teori secara langsung.
         - Fokus pada penjabaran potensi kekuatan adaptabilitas karier peserta berdasarkan profil RIASEC-nya.
         
@@ -30,7 +30,7 @@ def call_ai_guardrailed(prompt_spesifik, role_konteks, riwayat_intervensi=None):
         Format JSON:
         {{
           "tingkat_risiko": "TINGGI/SEDANG/RENDAH",
-          "analisis": "Maksimal 2 kalimat fakta analitis psikologis/belajar. Jangan memvonis gagal.",
+          "analisis": "Maksimal 2 kalimat fakta analisis keselarasan minat dan kendala belajar. Jangan memvonis gagal.",
           "rekomendasi_aksi": "PENTING: Output HARUS berupa TEKS STRING TUNGGAL (bukan array/dictionary). Jika role Instruktur: berikan langkah teknis matrikulasi. Jika role Konselor/Pengantar Kerja: Berikan 2 rumusan PERTANYAAN EKSPLORASI (Coaching Questions) dalam format teks bernomor '1. [Pertanyaan pertama]\\n2. [Pertanyaan kedua]'."
         }}
         """

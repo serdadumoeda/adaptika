@@ -78,8 +78,8 @@ def create_scatter_kognitif_chart(df: pd.DataFrame):
         color="Diagnosis_Awal",
         hover_name="Nama",
         labels={
-            "Skor_Logika_Numerik": "Kapasitas Logika Numerik", 
-            "Skor_Spasial_Figural": "Kapasitas Spasial Figural",
+            "Skor_Logika_Numerik": "Kesiapan Logika Numerik", 
+            "Skor_Spasial_Figural": "Kesiapan Spasial Figural",
             "Diagnosis_Awal": "Status Kesiapan"
         },
         color_discrete_sequence=px.colors.qualitative.Safe

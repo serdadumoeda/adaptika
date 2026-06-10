@@ -147,9 +147,9 @@ def _generate_scatter_chart(df, tmp_dir):
     ax.text(30, 25, 'K4: Perlu Perhatian\nKhusus', fontsize=8, ha='center',
             color='#ef4444', fontweight='bold', alpha=0.7)
     
-    ax.set_xlabel('Skor Logika Numerik', fontsize=10)
+    ax.set_xlabel('Logika Numerik (0-100)', fontsize=10)
     ax.set_ylabel('Skor Spasial Figural', fontsize=10)
-    ax.set_title('Peta Persebaran Kapasitas Kognitif Peserta', fontweight='bold', fontsize=12)
+    ax.set_title('Peta Persebaran Kesiapan Belajar Teknis', fontweight='bold', fontsize=12)
     ax.set_xlim(-5, 105)
     ax.set_ylim(-5, 105)
     ax.spines['top'].set_visible(False)
@@ -447,9 +447,9 @@ def generate_pdf_report(df: pd.DataFrame):
     pdf.set_font('Arial', '', 10)
     pdf.set_text_color(51, 65, 85)
     summary = (
-        f"Laporan ini menyajikan analisis kesiapan kerja terhadap {total} peserta pelatihan vokasi "
-        f"berdasarkan data tes kemampuan berpikir (kognitif) dan tes kepribadian RIASEC yang diperoleh "
-        f"dari platform SIAPKerja Kementerian Ketenagakerjaan. Peserta dikelompokkan ke dalam 4 kuadran "
+        f"Laporan ini menyajikan hasil analisis kesiapan dan keselarasan minat peserta "
+        f"berdasarkan data tes kemampuan dasar (literasi & numerasi) dan pemetaan minat RIASEC yang diperoleh "
+        f"dari platform SIAPKerja Kemnaker RI. Peserta dikelompokkan ke dalam 4 kuadran "
         f"kesiapan berdasarkan teori Holland (1959), Schmidt & Hunter (1998), dan Kristof-Brown (2005)."
     )
     pdf.multi_cell(0, 5.5, clean_pdf_text(summary))
@@ -520,7 +520,7 @@ def generate_pdf_report(df: pd.DataFrame):
     # Scatter chart
     pdf.set_font('Arial', 'B', 12)
     pdf.set_text_color(51, 65, 85)
-    pdf.cell(0, 8, clean_pdf_text('B. Peta Persebaran Kapasitas Kognitif'), 0, 1, 'L')
+    pdf.cell(0, 8, clean_pdf_text('B. Peta Persebaran Kesiapan Belajar Teknis'), 0, 1, 'L')
     pdf.set_font('Arial', '', 9)
     pdf.multi_cell(0, 5, clean_pdf_text(
         "Grafik berikut menampilkan posisi setiap peserta berdasarkan skor Logika Numerik (sumbu X) "
@@ -849,8 +849,8 @@ def _generate_radar_chart_passport(skor_numerik, skor_figural, tmp_dir):
     ax.grid(color='#e2e8f0', linewidth=0.5)
     ax.spines['polar'].set_color('#e2e8f0')
     
-    ax.set_title('Profil Kapasitas Kognitif', fontsize=12, fontweight='bold',
-                 pad=20, color='#0f172a')
+    ax.set_title('Profil Kesiapan Belajar', fontsize=12, fontweight='bold',
+                 y=1.05, color='#0f172a')
     
     fig.tight_layout()
     path = os.path.join(tmp_dir, 'passport_radar.png')
@@ -908,7 +908,7 @@ def _generate_riasec_chart_passport(kode_riasec, tmp_dir):
     ax.set_yticklabels(labels, fontsize=8)
     ax.set_xlim(0, 110)
     ax.set_xlabel('Intensitas', fontsize=9)
-    ax.set_title(f'Profil Kepribadian Holland (RIASEC): {kode}', 
+    ax.set_title(f'Profil Minat Holland (RIASEC): {kode}', 
                  fontsize=11, fontweight='bold', color='#0f172a')
     
     # Value labels
@@ -1013,17 +1013,17 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
         readiness_label = 'SIAP OPTIMAL'
         readiness_color = (16, 185, 129)
         readiness_bg = (209, 250, 229)
-        readiness_desc = 'Peserta memiliki kapasitas kognitif dan profil kepribadian yang sangat sesuai dengan program kejuruan. Rekomendasi: Prioritas penempatan langsung ke industri.'
+        readiness_desc = 'Peserta memiliki kesiapan belajar teknis dan profil minat yang sangat sesuai dengan program kejuruan. Rekomendasi: Prioritas penempatan langsung ke industri.'
     elif 'Kuadran 2' in str(diagnosis):
         readiness_label = 'BERKEMBANG'
         readiness_color = (245, 158, 11)
         readiness_bg = (254, 243, 199)
-        readiness_desc = 'Peserta memiliki profil kepribadian yang cocok namun memerlukan penguatan teknis. Dengan pendampingan yang tepat, peserta memiliki potensi tinggi untuk berkembang pesat.'
+        readiness_desc = 'Peserta memiliki profil minat yang cocok namun memerlukan penguatan teknis. Dengan pendampingan yang tepat, peserta memiliki potensi tinggi untuk berkembang pesat.'
     elif 'Kuadran 3' in str(diagnosis):
         readiness_label = 'PERLU ARAH'
         readiness_color = (249, 115, 22)
         readiness_bg = (255, 237, 213)
-        readiness_desc = 'Peserta memiliki kapasitas kognitif yang baik namun profil kepribadian menunjukkan kecocokan lebih tinggi di bidang lain. Dapat diarahkan ke posisi industri yang sesuai minat.'
+        readiness_desc = 'Peserta memiliki kesiapan belajar yang baik namun profil minat menunjukkan kecocokan lebih tinggi di bidang lain. Dapat diarahkan ke posisi industri yang sesuai minat.'
     else:
         readiness_label = 'DALAM PENDAMPINGAN'
         readiness_color = (239, 68, 68)
@@ -1102,7 +1102,7 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     
     pdf.set_x(30)
     pdf.set_font('Arial', '', 10)
-    pdf.cell(150, 7, clean_pdf_text(f'Kode Kepribadian: {kode_riasec} ({profil_riasec})'), 0, 1, 'C')
+    pdf.cell(150, 7, clean_pdf_text(f'Kode Minat: {kode_riasec} ({profil_riasec})'), 0, 1, 'C')
     
     pdf.set_x(30)
     pdf.set_font('Arial', 'B', 10)
@@ -1134,16 +1134,17 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     # =====================================================================
     pdf.add_page()
     
-    pdf.set_font('Arial', 'B', 14)
+    pdf.set_font('Helvetica', 'B', 14)
     pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 10, clean_pdf_text('1. Profil Kapasitas Kognitif'), 0, 1, 'L')
-    pdf.ln(1)
+    pdf.cell(0, 10, clean_pdf_text('1. Profil Kesiapan Belajar'), 0, 1, 'L')
+    pdf.ln(2)
     
     pdf.set_font('Arial', '', 9)
     pdf.set_text_color(71, 85, 105)
     pdf.multi_cell(0, 5, clean_pdf_text(
-        "Kapasitas kognitif menunjukkan kemampuan berpikir logis dan kemampuan memproses informasi visual-spasial. "
-        "Kedua dimensi ini diukur melalui tes terstandar dari platform SIAPKerja Kementerian Ketenagakerjaan RI."
+        "Kesiapan belajar teknis menunjukkan kemampuan dasar dalam berpikir logis dan memproses informasi visual-spasial. "
+        "Nilai yang lebih tinggi menunjukkan potensi daya tangkap yang lebih cepat dalam menyerap "
+        "materi pelatihan yang bersifat analitis atau teknis."
     ))
     pdf.ln(3)
     
@@ -1183,8 +1184,7 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     scores = [
         ('Logika Numerik', skor_numerik),
         ('Spasial Figural', skor_figural),
-        ('Daya Adaptasi (Estimasi)', daya_adaptasi),
-        ('Rata-rata Kognitif', avg_kognitif),
+        ('Rata-rata Kesiapan', avg_kognitif),
     ]
     
     pdf.set_text_color(15, 23, 42)
@@ -1209,13 +1209,13 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     # =====================================================================
     pdf.set_font('Arial', 'B', 14)
     pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 10, clean_pdf_text('2. Profil Kepribadian Holland (RIASEC)'), 0, 1, 'L')
+    pdf.cell(0, 10, clean_pdf_text('2. Profil Minat Holland (RIASEC)'), 0, 1, 'L')
     pdf.ln(1)
     
     pdf.set_font('Arial', '', 9)
     pdf.set_text_color(71, 85, 105)
     pdf.multi_cell(0, 5, clean_pdf_text(
-        f"Berdasarkan teori Holland (1959), kepribadian kerja Anda tergolong dalam tipe "
+        f"Berdasarkan teori Holland (1959), minat kerja Anda tergolong dalam tipe "
         f"{profil_riasec} ({kode_riasec}). Profil ini menunjukkan gaya kerja, lingkungan ideal, "
         f"dan pendekatan problem-solving yang paling alami bagi Anda."
     ))
@@ -1269,7 +1269,7 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
          'Dapat menganalisis dan memecahkan masalah teknis secara sistematis'),
         ('Kemampuan Visual-Spasial', skor_figural,
          'Mampu memahami blueprint, skema, dan layout dengan baik'),
-        ('Kecocokan Kepribadian-Karir', 
+        ('Kecocokan Minat-Karir', 
          85 if 'Kuadran 1' in str(diagnosis) else 65 if 'Kuadran 2' in str(diagnosis) else 50,
          'Person-job fit berdasarkan profil Holland RIASEC'),
         ('Potensi Adaptabilitas Karir',
@@ -1386,9 +1386,9 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     pdf.set_font('Arial', '', 9)
     pdf.set_text_color(22, 101, 52)
     pdf.multi_cell(175, 5, clean_pdf_text(
-        f"Peserta atas nama {nama_peserta} telah melalui proses asesmen kesiapan kerja "
-        f"yang mencakup tes kemampuan berpikir (kognitif) dan tes kepribadian RIASEC melalui platform "
-        f"SIAPKerja Kementerian Ketenagakerjaan RI, serta monitoring pendampingan selama masa pelatihan "
+        f"Surat Keterangan Pendamping ini diterbitkan berdasarkan hasil pengolahan data agregat "
+        f"yang mencakup tes kemampuan dasar (literasi & numerasi) dan pemetaan minat RIASEC melalui platform "
+        f"SIAPKerja Kementerian Ketenagakerjaan Republik Indonesia, serta monitoring pendampingan selama masa pelatihan "
         f"di Balai Pelatihan Vokasi dan Produktivitas. Status kesiapan: {readiness_label}."
     ))
     

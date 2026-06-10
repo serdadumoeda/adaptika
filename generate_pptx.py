@@ -297,7 +297,7 @@ add_text_box(slide, Inches(0.8), Inches(1.1), Inches(10), Inches(0.7),
              "Apa itu ADAPTIKA?", font_size=38, color=PRIMARY_LIGHT, bold=True)
 
 segments = [
-    ("Purwarupa aplikasi yang mengubah data tes psikometri menjadi ", TEXT_SECONDARY),
+    ("Purwarupa aplikasi yang mengubah data tes pemetaan minat menjadi ", TEXT_SECONDARY),
     ("klasifikasi kesiapan kerja", ACCENT_LIGHT, True),
     (" dan ", TEXT_SECONDARY),
     ("rekomendasi bimbingan berbasis AI", ACCENT_LIGHT, True),
@@ -350,7 +350,7 @@ add_text_box(slide, Inches(0.8), Inches(1.1), Inches(10), Inches(0.7),
              "Konsep 4 Kuadran", font_size=34, color=PRIMARY_LIGHT, bold=True)
 
 segments = [
-    ("Dibangun dari 3 teori psikologi teruji: ", TEXT_SECONDARY),
+    ("Dibangun dari 3 teori keselarasan minat & vokasi: ", TEXT_SECONDARY),
     ("Holland (1959)", TEXT_PRIMARY, True),
     (", ", TEXT_SECONDARY),
     ("Schmidt & Hunter (1998)", TEXT_PRIMARY, True),
@@ -495,8 +495,8 @@ add_text_box(slide, Inches(0.8), Inches(0.85), Inches(10), Inches(0.6),
 
 segments = [
     ("Terinspirasi dari ", TEXT_SECONDARY),
-    ("Psikologi Positif", TEXT_PRIMARY, True),
-    (" (Seligman & Csikszentmihalyi, 2000) — fokus pada kekuatan, bukan kelemahan.", TEXT_SECONDARY),
+    ("Pendekatan Adaptabilitas Karier", TEXT_PRIMARY, True),
+    (" (Savickas, 1997) — fokus pada kekuatan, bukan kelemahan.", TEXT_SECONDARY),
 ]
 add_multiformat_text(slide, Inches(0.8), Inches(1.5), Inches(10), Inches(0.4), 
                      segments, font_size=12)

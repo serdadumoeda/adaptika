@@ -159,15 +159,15 @@ if not df.empty:
     st.session_state.df_peserta = df
 
 help_kuadran = """
-**Penjelasan Analisis Kesiapan Belajar & Psikologi:**
-- **Kuadran 1 (Aman):** Kognitif sesuai beban materi & Kepribadian sesuai. 
+**Penjelasan Analisis Kesiapan & Keselarasan Belajar:**
+- **Kuadran 1 (Aman):** Kesiapan sesuai tingkat materi & Minat selaras. 
 - **Kuadran 2 (Learning Gap Teknis):** Butuh intervensi pedagogi pengajaran dari Instruktur. 
 - **Kuadran 3 (Risiko Fatigue):** Mismatch profil yang berpotensi memicu demotivasi. Butuh Pengantar Kerja. 
 - **Kuadran 4 (Krisis Ganda):** Risiko drop-out tertinggi akibat akumulasi beban mental dan mismatch. 
 """
 
 if role == "Instruktur Teknis":
-    jumlah_tunggu = len(df[df['Diagnosis_Awal'].str.contains("Kognitif|Krisis", na=False) & (df['Status_Instruktur'] == 'Belum Ditangani')])
+    jumlah_tunggu = len(df[df['Diagnosis_Awal'].str.contains("Gap|Krisis", na=False) & (df['Status_Instruktur'] == 'Belum Ditangani')])
 elif role == "Pengantar Kerja":
     jumlah_tunggu = len(df[df['Diagnosis_Awal'].str.contains("Risiko|Krisis", na=False) & (df['Status_Pengantar_Kerja'] == 'Belum Ditangani')])
 elif role == "Seksi Pemberdayaan":
@@ -207,7 +207,7 @@ if role == "Penyelenggara Pelatihan":
     tab1, tab2, tab3 = st.tabs(["📊 Analisis & Persebaran", "⚙️ Keputusan Manajerial", "📑 Rekapitulasi Data"])
     
     with tab1:
-        st.markdown("### 📊 Indeks Kesiapan Kerja & Beban Kognitif BPVP")
+        st.markdown("### 📊 Indeks Kesiapan Kerja & Potensi Kendala Belajar")
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -252,8 +252,8 @@ if role == "Penyelenggara Pelatihan":
         
         st.divider()
         
-        st.markdown("### 📈 Peta Persebaran Beban Kognitif Peserta")
-        st.caption("Visualisasi penyebaran kapasitas kognitif untuk memprediksi ketimpangan serapan materi di dalam bengkel kerja.")
+        st.markdown("### 📈 Peta Persebaran Kesiapan Belajar Teknis")
+        st.caption("Visualisasi penyebaran potensi performa pelatihan untuk memprediksi ketimpangan serapan materi di dalam bengkel kerja.")
         fig_scatter = create_scatter_kognitif_chart(df)
         st.plotly_chart(fig_scatter, use_container_width=True)
         
@@ -311,10 +311,10 @@ if role == "Penyelenggara Pelatihan":
 # DASBOR 2: INSTRUKTUR
 # ==========================================
 elif role == "Instruktur Teknis":
-    st.markdown("### 🛠️ Dasbor Instruktur: Manajemen Beban Kognitif")
+    st.markdown("### 🛠️ Dasbor Instruktur: Manajemen Potensi Kendala Belajar")
     st.caption("Fokus: Memodifikasi teknik pengajaran bengkel untuk peserta dengan indikasi learning gap teknis.")
     
-    mask_masalah = df['Diagnosis_Awal'].str.contains("Kognitif|Krisis", na=False)
+    mask_masalah = df['Diagnosis_Awal'].str.contains("Gap|Krisis", na=False)
     mask_belum = df['Status_Instruktur'] == "Belum Ditangani"
     df_instruktur = df[mask_masalah & mask_belum]
     
@@ -332,10 +332,10 @@ elif role == "Instruktur Teknis":
             pilih_peserta = st.selectbox("Pilih Peserta untuk Penyesuaian Pedagogis:", df_instruktur['Nama'])
             dt = df_instruktur[df_instruktur['Nama'] == pilih_peserta].iloc[0]
             
-            tab1, tab2 = st.tabs(["🧩 Pemetaan Kognitif", "🤖 AI Rekomendasi"])
+            tab1, tab2 = st.tabs(["🧩 Pemetaan Kesiapan Belajar", "🤖 AI Rekomendasi"])
             
             with tab1:
-                st.markdown(f"### 🕸️ Profil Beban Kognitif: {dt['Nama']}")
+                st.markdown(f"### 🕸️ Profil Kesiapan Belajar: {dt['Nama']}")
                 
                 scores_dict = {
                     "Pengetahuan Umum": 0,
@@ -375,20 +375,20 @@ elif role == "Instruktur Teknis":
                     st.plotly_chart(fig_radar, use_container_width=True, theme=None)
                     
                 with col_text:
-                    st.info(f"**💡 Kapasitas Kognitif Tertinggi:**\nPeserta unggul di **{kategori_tertinggi}** ({nilai_tertinggi}/100). Pendekatan materi disarankan menggunakan kekuatan ini.")
+                    st.info(f"**💡 Kekuatan Kesiapan Belajar:**\nPeserta unggul di **{kategori_tertinggi}** ({nilai_tertinggi}/100). Pendekatan materi disarankan menggunakan kekuatan ini.")
                     st.error(f"**⚠️ Indikasi Learning Gap Teknis:**\nPeserta memiliki kendala pada **{kategori_terendah}** (Skor: {nilai_terendah}/100). Hal ini berisiko memperlambat daya tangkap di bengkel kerja jika instruktur memaksakan metode standar.")
                     skor_str = ", ".join([f"{k}: {v}" for k, v in scores_dict.items()])
                     
             with tab2:
-                st.markdown(f"#### 💡 Mitigasi Beban Kognitif & Pedagogi: {dt['Nama']}")
+                st.markdown(f"#### 💡 Mitigasi Kendala Belajar & Pedagogi: {dt['Nama']}")
                 st.caption("Gunakan rekomendasi asisten AI untuk memformulasikan taktik matrikulasi bengkel.")
                 
                 ai_cache_key = f"ai_result_instruktur_{dt['Nama']}"
                 if ai_cache_key not in st.session_state:
-                    with st.spinner("Menganalisis skenario penurunan beban kognitif secara otomatis..."):
+                    with st.spinner("Menganalisis skenario penurunan kendala belajar secara otomatis..."):
                         prompt = f"""
                         Peserta {dt['Nama']} mengikuti kelas praktik {dt['Kejuruan']}. 
-                        Pemetaan kognitif lengkapnya: {skor_str}. 
+                        Pemetaan kesiapan belajarnya: {skor_str}. 
                         Ia sangat kesulitan di area {kategori_terendah} ({nilai_terendah}/100), NAMUN ia memiliki keunggulan kuat di {kategori_tertinggi} ({nilai_tertinggi}/100). 
                         Tugas: Berikan 1 teknik instruksional yang SANGAT PERSONAL dan UNIK. Bagaimana Instruktur dapat menggunakan kekuatan {kategori_tertinggi}-nya untuk membantu ia memahami materi yang membutuhkan {kategori_terendah}? JANGAN gunakan contoh klise/template standar.
                         """
@@ -425,7 +425,7 @@ elif role == "Instruktur Teknis":
                         
                     st.rerun() 
     else:
-        st.success("🎉 Luar biasa! Seluruh potensi kelelahan kognitif peserta telah dimitigasi.")
+        st.success("🎉 Luar biasa! Seluruh potensi kendala belajar teknis peserta telah dimitigasi.")
         st.balloons()
 
 # ==========================================
@@ -456,7 +456,7 @@ elif role == "Pengantar Kerja":
             tab1, tab2 = st.tabs(["📋 Profil RIASEC", "💡 Konseling Motivasi"])
             
             with tab1:
-                st.markdown(f"### 📊 Detail Asesmen Psikologis Ketenagakerjaan: {dt['Nama']}")
+                st.markdown(f"### 📊 Detail Pemetaan Keselarasan Minat: {dt['Nama']}")
                 
                 riasec_code = str(dt['Kode_RIASEC']).upper()
                 if 'C' in riasec_code or 'E' in riasec_code:
@@ -603,7 +603,7 @@ elif role == "Seksi Pemberdayaan":
                     
                     ai_cache_key = f"ai_result_pemberdayaan_{dt['Nama']}"
                     if ai_cache_key not in st.session_state:
-                        with st.spinner("Mencocokkan arsitektur psikologis secara otomatis..."):
+                        with st.spinner("Mencocokkan arsitektur profil minat secara otomatis..."):
                             prompt = f"""
                             Alumni {dt['Nama']} telah lulus KOMPETEN (Kejuruan {dt['Kejuruan']}).
                             Profil karakter bawaan (RIASEC): {dt['Kode_RIASEC']} ({dt['Profil_RIASEC']}).
@@ -683,7 +683,7 @@ elif role == "Peserta Pelatihan":
                 Kejuruan: {dt['Kejuruan']}
                 Profil RIASEC Utama: {dt['Profil_RIASEC']} ({dt['Kode_RIASEC']})
                 
-                Tugas: Buat narasi psikologi positif yang sangat menjual (HR-friendly) tentang bagaimana karakter bawaannya ini justru akan membuat dia sukses mempraktikkan skill {dt['Kejuruan']} di dunia kerja, serta rekomendasikan 2 ekosistem industri spesifik yang cocok untuknya.
+                Tugas: Buat narasi adaptabilitas positif yang sangat menjual (HR-friendly) tentang bagaimana karakter bawaannya ini justru akan membuat dia sukses mempraktikkan skill {dt['Kejuruan']} di dunia kerja, serta rekomendasikan 2 ekosistem industri spesifik yang cocok untuknya.
                 """
                 
                 # Membangun Smart History (RAG JSON)
@@ -731,7 +731,7 @@ if role != "Peserta Pelatihan":
     # PERBAIKAN: Laporan unduhan kini ditaruh di luar blok kondisi, sehingga akan SELALU MUNCUL di bagian bawah halaman
     st.divider()
     st.markdown("### 🏛️ Unduh Laporan Indeks Kesiapan BPVP")
-    st.caption("📄 Laporan komprehensif mencakup: Cover page, ringkasan eksekutif, chart distribusi kuadran, progress intervensi, peta kognitif, detail peserta per kuadran (teks lengkap), jejak audit, dan lembar pengesahan.")
+    st.caption("📄 Laporan komprehensif mencakup: Cover page, ringkasan eksekutif, chart distribusi kuadran, progress intervensi, peta kesiapan belajar, detail peserta per kuadran (teks lengkap), jejak audit, dan lembar pengesahan.")
     try:
         pdf_report_bytes = generate_pdf_report(df)
         st.download_button(
