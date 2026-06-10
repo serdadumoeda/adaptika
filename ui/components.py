@@ -98,7 +98,7 @@ def render_login_gateway():
             <img src="https://kemnaker.go.id/assets/images/logo-color.png" style="height: 90px; margin-bottom: 1.5rem;">
             <h1 style="color: var(--text-color); font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.025em;">ADAPTIKA Enterprise</h1>
             <p style="color: var(--text-color); opacity: 0.8; font-size: 1.15rem; margin-top: 0; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.5;">
-                Sistem Analisis Gap Kesiapan Belajar & Keselarasan Minat Pelatihan Berbasis Data Asesmen
+                Sistem Analisis Gap Kesiapan Pelatihan & Keselarasan Minat Pelatihan Berbasis Data Asesmen
             </p>
         </div>
         """,

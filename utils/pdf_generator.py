@@ -149,7 +149,7 @@ def _generate_scatter_chart(df, tmp_dir):
     
     ax.set_xlabel('Logika Numerik (0-100)', fontsize=10)
     ax.set_ylabel('Skor Spasial Figural', fontsize=10)
-    ax.set_title('Peta Persebaran Kesiapan Belajar Teknis', fontweight='bold', fontsize=12)
+    ax.set_title('Peta Persebaran Kesiapan Pelatihan Teknis', fontweight='bold', fontsize=12)
     ax.set_xlim(-5, 105)
     ax.set_ylim(-5, 105)
     ax.spines['top'].set_visible(False)
@@ -518,9 +518,9 @@ def generate_pdf_report(df: pd.DataFrame):
         pdf.ln(62)
     
     # Scatter chart
-    pdf.set_font('Arial', 'B', 12)
-    pdf.set_text_color(51, 65, 85)
-    pdf.cell(0, 8, clean_pdf_text('B. Peta Persebaran Kesiapan Belajar Teknis'), 0, 1, 'L')
+    pdf.set_font('Helvetica', 'B', 14)
+    pdf.cell(0, 8, clean_pdf_text('B. Peta Persebaran Kesiapan Pelatihan Teknis'), 0, 1, 'L')
+    pdf.ln(2)
     pdf.set_font('Arial', '', 9)
     pdf.multi_cell(0, 5, clean_pdf_text(
         "Grafik berikut menampilkan posisi setiap peserta berdasarkan skor Logika Numerik (sumbu X) "
@@ -849,7 +849,7 @@ def _generate_radar_chart_passport(skor_numerik, skor_figural, tmp_dir):
     ax.grid(color='#e2e8f0', linewidth=0.5)
     ax.spines['polar'].set_color('#e2e8f0')
     
-    ax.set_title('Profil Kesiapan Belajar', fontsize=12, fontweight='bold',
+    ax.set_title('Profil Kesiapan Pelatihan', fontsize=12, fontweight='bold',
                  y=1.05, color='#0f172a')
     
     fig.tight_layout()
@@ -1012,8 +1012,8 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     if 'Kuadran 1' in str(diagnosis):
         readiness_label = 'SIAP OPTIMAL'
         readiness_color = (16, 185, 129)
-        readiness_bg = (209, 250, 229)
-        readiness_desc = 'Peserta memiliki kesiapan belajar teknis dan profil minat yang sangat sesuai dengan program kejuruan. Rekomendasi: Prioritas penempatan langsung ke industri.'
+        readiness_title = 'Aman & Mumpuni'
+        readiness_desc = 'Peserta memiliki kesiapan pelatihan teknis dan profil minat yang sangat sesuai dengan program kejuruan. Rekomendasi: Prioritas penempatan langsung ke industri.'
     elif 'Kuadran 2' in str(diagnosis):
         readiness_label = 'BERKEMBANG'
         readiness_color = (245, 158, 11)
@@ -1022,8 +1022,8 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     elif 'Kuadran 3' in str(diagnosis):
         readiness_label = 'PERLU ARAH'
         readiness_color = (249, 115, 22)
-        readiness_bg = (255, 237, 213)
-        readiness_desc = 'Peserta memiliki kesiapan belajar yang baik namun profil minat menunjukkan kecocokan lebih tinggi di bidang lain. Dapat diarahkan ke posisi industri yang sesuai minat.'
+        readiness_title = 'Risiko Demotivasi / Fatigue'
+        readiness_desc = 'Peserta memiliki kesiapan pelatihan yang baik namun profil minat menunjukkan kecocokan lebih tinggi di bidang lain. Dapat diarahkan ke posisi industri yang sesuai minat.'
     else:
         readiness_label = 'DALAM PENDAMPINGAN'
         readiness_color = (239, 68, 68)
@@ -1136,13 +1136,13 @@ def generate_career_passport(nama_peserta, kejuruan, narasi_kekuatan, rekomendas
     
     pdf.set_font('Helvetica', 'B', 14)
     pdf.set_text_color(15, 23, 42)
-    pdf.cell(0, 10, clean_pdf_text('1. Profil Kesiapan Belajar'), 0, 1, 'L')
+    pdf.cell(0, 10, clean_pdf_text('1. Profil Kesiapan Pelatihan'), 0, 1, 'L')
     pdf.ln(2)
     
     pdf.set_font('Arial', '', 9)
     pdf.set_text_color(71, 85, 105)
     pdf.multi_cell(0, 5, clean_pdf_text(
-        "Kesiapan belajar teknis menunjukkan kemampuan dasar dalam berpikir logis dan memproses informasi visual-spasial. "
+        "Kesiapan pelatihan teknis menunjukkan kemampuan dasar dalam berpikir logis dan memproses informasi visual-spasial. "
         "Nilai yang lebih tinggi menunjukkan potensi daya tangkap yang lebih cepat dalam menyerap "
         "materi pelatihan yang bersifat analitis atau teknis."
     ))

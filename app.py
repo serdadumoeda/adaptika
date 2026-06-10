@@ -252,7 +252,7 @@ if role == "Penyelenggara Pelatihan":
         
         st.divider()
         
-        st.markdown("### 📈 Peta Persebaran Kesiapan Belajar Teknis")
+        st.markdown("### 📈 Peta Persebaran Kesiapan Pelatihan Teknis")
         st.caption("Visualisasi penyebaran potensi performa pelatihan untuk memprediksi ketimpangan serapan materi di dalam bengkel kerja.")
         fig_scatter = create_scatter_kognitif_chart(df)
         st.plotly_chart(fig_scatter, use_container_width=True)
@@ -332,10 +332,10 @@ elif role == "Instruktur Teknis":
             pilih_peserta = st.selectbox("Pilih Peserta untuk Penyesuaian Pedagogis:", df_instruktur['Nama'])
             dt = df_instruktur[df_instruktur['Nama'] == pilih_peserta].iloc[0]
             
-            tab1, tab2 = st.tabs(["🧩 Pemetaan Kesiapan Belajar", "🤖 AI Rekomendasi"])
+            tab1, tab2 = st.tabs(["🧩 Pemetaan Kesiapan Pelatihan", "🤖 AI Rekomendasi"])
             
             with tab1:
-                st.markdown(f"### 🕸️ Profil Kesiapan Belajar: {dt['Nama']}")
+                st.markdown(f"### 🕸️ Profil Kesiapan Pelatihan: {dt['Nama']}")
                 
                 scores_dict = {
                     "Pengetahuan Umum": 0,
@@ -375,7 +375,7 @@ elif role == "Instruktur Teknis":
                     st.plotly_chart(fig_radar, use_container_width=True, theme=None)
                     
                 with col_text:
-                    st.info(f"**💡 Kekuatan Kesiapan Belajar:**\nPeserta unggul di **{kategori_tertinggi}** ({nilai_tertinggi}/100). Pendekatan materi disarankan menggunakan kekuatan ini.")
+                    st.info(f"**💡 Kekuatan Kesiapan Pelatihan:**\nPeserta unggul di **{kategori_tertinggi}** ({nilai_tertinggi}/100). Pendekatan materi disarankan menggunakan kekuatan ini.")
                     st.error(f"**⚠️ Indikasi Learning Gap Teknis:**\nPeserta memiliki kendala pada **{kategori_terendah}** (Skor: {nilai_terendah}/100). Hal ini berisiko memperlambat daya tangkap di bengkel kerja jika instruktur memaksakan metode standar.")
                     skor_str = ", ".join([f"{k}: {v}" for k, v in scores_dict.items()])
                     
@@ -388,7 +388,7 @@ elif role == "Instruktur Teknis":
                     with st.spinner("Menganalisis skenario penurunan kendala belajar secara otomatis..."):
                         prompt = f"""
                         Peserta {dt['Nama']} mengikuti kelas praktik {dt['Kejuruan']}. 
-                        Pemetaan kesiapan belajarnya: {skor_str}. 
+                        Pemetaan kesiapan pelatihannya: {skor_str}. 
                         Ia sangat kesulitan di area {kategori_terendah} ({nilai_terendah}/100), NAMUN ia memiliki keunggulan kuat di {kategori_tertinggi} ({nilai_tertinggi}/100). 
                         Tugas: Berikan 1 teknik instruksional yang SANGAT PERSONAL dan UNIK. Bagaimana Instruktur dapat menggunakan kekuatan {kategori_tertinggi}-nya untuk membantu ia memahami materi yang membutuhkan {kategori_terendah}? JANGAN gunakan contoh klise/template standar.
                         """
@@ -731,7 +731,7 @@ if role != "Peserta Pelatihan":
     # PERBAIKAN: Laporan unduhan kini ditaruh di luar blok kondisi, sehingga akan SELALU MUNCUL di bagian bawah halaman
     st.divider()
     st.markdown("### 🏛️ Unduh Laporan Indeks Kesiapan BPVP")
-    st.caption("📄 Laporan komprehensif mencakup: Cover page, ringkasan eksekutif, chart distribusi kuadran, progress intervensi, peta kesiapan belajar, detail peserta per kuadran (teks lengkap), jejak audit, dan lembar pengesahan.")
+    st.caption("📄 Laporan komprehensif mencakup: Cover page, ringkasan eksekutif, chart distribusi kuadran, progress intervensi, peta kesiapan pelatihan, detail peserta per kuadran (teks lengkap), jejak audit, dan lembar pengesahan.")
     try:
         pdf_report_bytes = generate_pdf_report(df)
         st.download_button(
