@@ -39,6 +39,9 @@ class ImportPesertaCsvJob implements ShouldQueue
         $data = array_map('str_getcsv', file($this->filePath));
         $inserted = 0;
         $skipped  = 0;
+        
+        $countInstruktur = 0; // K2 & K4
+        $countPengantar = 0; // K3 & K4
 
         foreach (array_slice($data, 1) as $row) {
             if (count($row) >= 7) {
@@ -76,8 +79,34 @@ class ImportPesertaCsvJob implements ShouldQueue
                     'status_pemberdayaan' => 'Belum Disalurkan',
                 ]);
 
+                if (str_contains($diagnosis, 'Pendampingan') || str_contains($diagnosis, 'Perhatian')) {
+                    $countInstruktur++;
+                }
+                if (str_contains($diagnosis, 'Eksplorasi') || str_contains($diagnosis, 'Perhatian')) {
+                    $countPengantar++;
+                }
+
                 $inserted++;
             }
+        }
+
+        // Kirim Notifikasi
+        if ($countInstruktur > 0) {
+            $instrukturs = \App\Models\User::where('role', 'Instruktur Teknis')->get();
+            \Illuminate\Support\Facades\Notification::send($instrukturs, new \App\Notifications\SistemNotification(
+                'Tugas Mitigasi Baru',
+                "Ada {$countInstruktur} peserta (K2/K4) baru hasil import CSV yang menunggu mitigasi Anda.",
+                '/dashboard'
+            ));
+        }
+
+        if ($countPengantar > 0) {
+            $pengantars = \App\Models\User::where('role', 'Pengantar Kerja')->get();
+            \Illuminate\Support\Facades\Notification::send($pengantars, new \App\Notifications\SistemNotification(
+                'Tugas Konseling Baru',
+                "Ada {$countPengantar} peserta (K3/K4) baru hasil import CSV yang menunggu konseling.",
+                '/dashboard'
+            ));
         }
 
         Log::info("ImportPesertaCsvJob: Import Selesai. $inserted ditambahkan, $skipped dilewati.");

@@ -181,6 +181,9 @@ class SiapKerjaApiService
         $skipped = 0;
         $errors = [];
 
+        $countInstruktur = 0;
+        $countPengantar = 0;
+
         foreach ($pesertaList as $p) {
             $nama = $p['nama'] ?? null;
             if (!$nama) {
@@ -218,10 +221,37 @@ class SiapKerjaApiService
                     'profil_riasec' => $spi['profil_riasec'] ?? null,
                     'diagnosis_awal' => $diagnosis,
                 ]);
+
+                if (str_contains($diagnosis, 'Pendampingan') || str_contains($diagnosis, 'Perhatian')) {
+                    $countInstruktur++;
+                }
+                if (str_contains($diagnosis, 'Eksplorasi') || str_contains($diagnosis, 'Perhatian')) {
+                    $countPengantar++;
+                }
+
                 $inserted++;
             } catch (\Exception $e) {
                 $errors[] = "Gagal menyimpan {$nama}: " . $e->getMessage();
             }
+        }
+
+        // Kirim Notifikasi
+        if ($countInstruktur > 0) {
+            $instrukturs = \App\Models\User::where('role', 'Instruktur Teknis')->get();
+            \Illuminate\Support\Facades\Notification::send($instrukturs, new \App\Notifications\SistemNotification(
+                'Tugas Mitigasi Baru',
+                "Ada {$countInstruktur} peserta (K2/K4) baru hasil Sinkronisasi API yang menunggu mitigasi Anda.",
+                '/dashboard'
+            ));
+        }
+
+        if ($countPengantar > 0) {
+            $pengantars = \App\Models\User::where('role', 'Pengantar Kerja')->get();
+            \Illuminate\Support\Facades\Notification::send($pengantars, new \App\Notifications\SistemNotification(
+                'Tugas Konseling Baru',
+                "Ada {$countPengantar} peserta (K3/K4) baru hasil Sinkronisasi API yang menunggu konseling.",
+                '/dashboard'
+            ));
         }
 
         return compact('inserted', 'skipped', 'errors');

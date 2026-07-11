@@ -189,6 +189,9 @@
                                 @endscript
                             </div>
 
+                            <!-- Peserta Timeline -->
+                            <livewire:components.peserta-timeline :pesertaId="$selectedPeserta->id" :key="'timeline-'.$selectedPeserta->id" />
+
                             <!-- Tab 2: AI Rekomendasi & Action -->
                             <div x-show="activeTab === 2" style="display: none;" class="space-y-6" x-transition>
                                 <div class="mb-4">

@@ -120,6 +120,15 @@ class DashboardInstruktur extends Component
                 'catatan' => 'Sertifikasi Akhir: Dinyatakan ' . $status
             ]);
             
+            if ($status === 'Kompeten') {
+                $pemberdayaan = \App\Models\User::where('role', 'Seksi Pemberdayaan')->get();
+                \Illuminate\Support\Facades\Notification::send($pemberdayaan, new \App\Notifications\SistemNotification(
+                    'Peserta Kompeten Baru',
+                    "Peserta {$peserta->nama} telah dievaluasi dengan status KOMPETEN dan menunggu penyaluran kerja.",
+                    '/dashboard'
+                ));
+            }
+            
             session()->flash('message_evaluasi', "Peserta {$peserta->nama} berhasil dievaluasi sebagai {$status}.");
             $this->reset(['pesertaId', 'aiRecommendation', 'catatan']);
         }

@@ -88,6 +88,14 @@ class DashboardPengantar extends Component
         $peserta->catatan_pengantar_kerja = 'Pengantar Kerja: ' . $this->catatan;
         $peserta->save();
 
+        // Notifikasi ke Instruktur bahwa Konseling Selesai
+        $instrukturs = \App\Models\User::where('role', 'Instruktur Teknis')->get();
+        \Illuminate\Support\Facades\Notification::send($instrukturs, new \App\Notifications\SistemNotification(
+            'Konseling Peserta Selesai',
+            "Peserta {$peserta->nama} telah selesai dikonseling dan kini siap untuk dievaluasi kelulusannya.",
+            '/dashboard'
+        ));
+
         session()->flash('message', 'Tindakan konseling berhasil disimpan.');
         $this->reset(['pesertaId', 'aiRecommendation', 'catatan']);
     }

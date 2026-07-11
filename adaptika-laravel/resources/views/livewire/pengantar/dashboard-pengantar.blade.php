@@ -70,6 +70,9 @@
                             </button>
                         </div>
 
+                        <!-- Peserta Timeline -->
+                        <livewire:components.peserta-timeline :pesertaId="$selectedPeserta->id" :key="'timeline-pengantar-'.$selectedPeserta->id" />
+
                         <!-- Tab 1: Profil RIASEC -->
                         <div x-show="activeTab === 1" class="space-y-6" x-transition>
                             @php
