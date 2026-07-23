@@ -44,6 +44,26 @@ $_ENV['SESSION_DRIVER'] = 'cookie';
 putenv('CACHE_STORE=array');
 $_ENV['CACHE_STORE'] = 'array';
 
+// Force SQLite setup unless an external DB_HOST is explicitly configured
+if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
+    putenv('DB_CONNECTION=sqlite');
+    $_ENV['DB_CONNECTION'] = 'sqlite';
+    $_SERVER['DB_CONNECTION'] = 'sqlite';
+
+    $seedDb = __DIR__ . '/../database/database_seed.sqlite';
+    $tmpDb = '/tmp/database.sqlite';
+
+    if (file_exists($seedDb) && (!file_exists($tmpDb) || filesize($tmpDb) === 0)) {
+        @copy($seedDb, $tmpDb);
+    } elseif (!file_exists($tmpDb)) {
+        @touch($tmpDb);
+    }
+
+    putenv("DB_DATABASE={$tmpDb}");
+    $_ENV['DB_DATABASE'] = $tmpDb;
+    $_SERVER['DB_DATABASE'] = $tmpDb;
+}
+
 // Prepare writable storage directories in /tmp for Vercel Serverless environment
 $storageDirs = [
     '/tmp/storage/app/public',
@@ -58,15 +78,6 @@ foreach ($storageDirs as $dir) {
     if (!is_dir($dir)) {
         @mkdir($dir, 0755, true);
     }
-}
-
-// Database setup: SQLite fallback
-$localDb = __DIR__ . '/../database/database.sqlite';
-$tmpDb = '/tmp/database.sqlite';
-if (file_exists($localDb) && !file_exists($tmpDb)) {
-    @copy($localDb, $tmpDb);
-} elseif (!file_exists($tmpDb)) {
-    @touch($tmpDb);
 }
 
 // Forward request to Laravel public entrypoint

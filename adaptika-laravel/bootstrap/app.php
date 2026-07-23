@@ -23,7 +23,7 @@ $app = Application::configure(basePath: dirname(__DIR__))
     })->create();
 
 // Customize storage path for Vercel Serverless environment
-if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') || is_dir('/tmp/storage')) {
+if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === '1') {
     $app->useStoragePath('/tmp/storage');
 }
 
