@@ -18,6 +18,12 @@ putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 
+putenv('APP_SERVICES_CACHE=/tmp/bootstrap/cache/services.php');
+putenv('APP_PACKAGES_CACHE=/tmp/bootstrap/cache/packages.php');
+putenv('APP_ROUTES_CACHE=/tmp/bootstrap/cache/routes-v7.php');
+putenv('APP_CONFIG_CACHE=/tmp/bootstrap/cache/config.php');
+putenv('APP_EVENTS_CACHE=/tmp/bootstrap/cache/events.php');
+
 // Explicit check for Composer autoload
 $autoloadPath = __DIR__ . '/../vendor/autoload.php';
 if (!file_exists($autoloadPath)) {

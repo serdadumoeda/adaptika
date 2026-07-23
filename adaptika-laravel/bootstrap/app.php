@@ -22,9 +22,12 @@ $app = Application::configure(basePath: dirname(__DIR__))
         );
     })->create();
 
-// Customize storage path for Vercel Serverless environment
+// Customize storage & bootstrap paths for Vercel Serverless environment
 if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === '1') {
     $app->useStoragePath('/tmp/storage');
+    if (method_exists($app, 'useBootstrapPath')) {
+        $app->useBootstrapPath('/tmp/bootstrap');
+    }
 }
 
 return $app;
