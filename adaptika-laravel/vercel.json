@@ -8,7 +8,8 @@
   },
   "env": {
     "VERCEL": "1",
-    "APP_STORAGE_PATH": "/tmp/storage"
+    "APP_STORAGE_PATH": "/tmp/storage",
+    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views"
   },
   "routes": [
     {
