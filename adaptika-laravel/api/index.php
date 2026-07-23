@@ -95,6 +95,20 @@ try {
     echo '<h2 style="color:#9f1239; margin-top:0;">⚠️ ADAPTIKA Vercel Exception Debugger</h2>';
     echo '<p style="font-size:16px;"><strong>Error:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
     echo '<p style="font-size:14px; color:#4c0519;"><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
+
+    $curr = $e;
+    $depth = 1;
+    while ($prev = $curr->getPrevious()) {
+        echo '<div style="background:#fecdd3; padding:15px; border-radius:8px; margin:15px 0;">';
+        echo '<h3 style="color:#881337; margin-top:0;">Root Cause Exception #' . $depth . ':</h3>';
+        echo '<p style="font-size:15px; color:#881337;"><strong>Root Error:</strong> ' . htmlspecialchars($prev->getMessage()) . '</p>';
+        echo '<p style="font-size:13px; color:#881337;"><strong>Root File:</strong> ' . htmlspecialchars($prev->getFile()) . ':' . $prev->getLine() . '</p>';
+        echo '<pre style="background:#4c0519; color:#fff; padding:10px; border-radius:6px; font-size:11px; overflow-x:auto;">' . htmlspecialchars($prev->getTraceAsString()) . '</pre>';
+        echo '</div>';
+        $curr = $prev;
+        $depth++;
+    }
+
     echo '<h3 style="color:#9f1239;">Stack Trace:</h3>';
     echo '<pre style="background:#881337; color:#fff; padding:15px; border-radius:8px; overflow-x:auto; font-size:12px;">' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
     echo '</div>';
