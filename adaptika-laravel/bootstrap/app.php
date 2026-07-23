@@ -22,10 +22,9 @@ $app = Application::configure(basePath: dirname(__DIR__))
         );
     })->create();
 
-// Customize storage path and view compile path for Vercel Serverless environment
+// Customize storage path for Vercel Serverless environment
 if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') || is_dir('/tmp/storage')) {
     $app->useStoragePath('/tmp/storage');
-    config(['view.compiled' => '/tmp/storage/framework/views']);
 }
 
 return $app;
