@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "composer install --no-dev --optimize-autoloader || true && vite build",
+        "build": "vite build",
         "dev": "vite"
     },
     "devDependencies": {
