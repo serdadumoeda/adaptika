@@ -14,7 +14,11 @@
   "routes": [
     {
       "src": "/build/(.*)",
-      "dest": "/build/$1"
+      "dest": "/public/build/$1"
+    },
+    {
+      "src": "/storage/(.*)",
+      "dest": "/public/storage/$1"
     },
     {
       "src": "/(.*)",

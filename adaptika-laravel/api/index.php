@@ -1,14 +1,5 @@
 <?php
 
-// Verbose error reporting for Vercel debugging
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-
-putenv('APP_DEBUG=true');
-$_ENV['APP_DEBUG'] = 'true';
-$_SERVER['APP_DEBUG'] = 'true';
-
 // Set Serverless Environment Variables
 putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
@@ -27,13 +18,9 @@ putenv('APP_EVENTS_CACHE=/tmp/bootstrap/cache/events.php');
 // Explicit check for Composer autoload
 $autoloadPath = __DIR__ . '/../vendor/autoload.php';
 if (!file_exists($autoloadPath)) {
-    http_response_code(200);
-    echo '<div style="font-family:sans-serif; padding:30px; background:#fef2f2; border:1px solid #f87171; border-radius:8px; margin:40px;">';
-    echo '<h2 style="color:#991b1b; margin-top:0;">⚠️ Vercel Deployment Error: vendor/autoload.php missing</h2>';
-    echo '<p style="color:#7f1d1d;">Dependencies PHP (Composer) belum terpasang di server Vercel.</p>';
-    echo '<p style="color:#7f1d1d;">Lokasi vendor yang dicari: <code>' . htmlspecialchars($autoloadPath) . '</code></p>';
-    echo '</div>';
-    exit(0);
+    http_response_code(500);
+    echo 'Vendor autoload missing.';
+    exit(1);
 }
 
 // Fallback APP_KEY if environment variable is missing on Vercel
@@ -86,31 +73,5 @@ foreach ($storageDirs as $dir) {
     }
 }
 
-// Forward request to Laravel public entrypoint with Throwable Debugger Wrapper
-try {
-    require __DIR__ . '/../public/index.php';
-} catch (\Throwable $e) {
-    http_response_code(200);
-    echo '<div style="font-family:sans-serif; padding:30px; background:#fff1f2; border:2px solid #e11d48; border-radius:12px; margin:20px;">';
-    echo '<h2 style="color:#9f1239; margin-top:0;">⚠️ ADAPTIKA Vercel Exception Debugger</h2>';
-    echo '<p style="font-size:16px;"><strong>Error:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
-    echo '<p style="font-size:14px; color:#4c0519;"><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
-
-    $curr = $e;
-    $depth = 1;
-    while ($prev = $curr->getPrevious()) {
-        echo '<div style="background:#fecdd3; padding:15px; border-radius:8px; margin:15px 0;">';
-        echo '<h3 style="color:#881337; margin-top:0;">Root Cause Exception #' . $depth . ':</h3>';
-        echo '<p style="font-size:15px; color:#881337;"><strong>Root Error:</strong> ' . htmlspecialchars($prev->getMessage()) . '</p>';
-        echo '<p style="font-size:13px; color:#881337;"><strong>Root File:</strong> ' . htmlspecialchars($prev->getFile()) . ':' . $prev->getLine() . '</p>';
-        echo '<pre style="background:#4c0519; color:#fff; padding:10px; border-radius:6px; font-size:11px; overflow-x:auto;">' . htmlspecialchars($prev->getTraceAsString()) . '</pre>';
-        echo '</div>';
-        $curr = $prev;
-        $depth++;
-    }
-
-    echo '<h3 style="color:#9f1239;">Stack Trace:</h3>';
-    echo '<pre style="background:#881337; color:#fff; padding:15px; border-radius:8px; overflow-x:auto; font-size:12px;">' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
-    echo '</div>';
-    exit(0);
-}
+// Forward request to Laravel public entrypoint
+require __DIR__ . '/../public/index.php';
