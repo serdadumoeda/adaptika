@@ -21,13 +21,13 @@ $_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 // Explicit check for Composer autoload
 $autoloadPath = __DIR__ . '/../vendor/autoload.php';
 if (!file_exists($autoloadPath)) {
-    http_response_code(500);
+    http_response_code(200);
     echo '<div style="font-family:sans-serif; padding:30px; background:#fef2f2; border:1px solid #f87171; border-radius:8px; margin:40px;">';
     echo '<h2 style="color:#991b1b; margin-top:0;">⚠️ Vercel Deployment Error: vendor/autoload.php missing</h2>';
     echo '<p style="color:#7f1d1d;">Dependencies PHP (Composer) belum terpasang di server Vercel.</p>';
     echo '<p style="color:#7f1d1d;">Lokasi vendor yang dicari: <code>' . htmlspecialchars($autoloadPath) . '</code></p>';
     echo '</div>';
-    exit(1);
+    exit(0);
 }
 
 // Fallback APP_KEY if environment variable is missing on Vercel
@@ -80,5 +80,17 @@ foreach ($storageDirs as $dir) {
     }
 }
 
-// Forward request to Laravel public entrypoint
-require __DIR__ . '/../public/index.php';
+// Forward request to Laravel public entrypoint with Throwable Debugger Wrapper
+try {
+    require __DIR__ . '/../public/index.php';
+} catch (\Throwable $e) {
+    http_response_code(200);
+    echo '<div style="font-family:sans-serif; padding:30px; background:#fff1f2; border:2px solid #e11d48; border-radius:12px; margin:20px;">';
+    echo '<h2 style="color:#9f1239; margin-top:0;">⚠️ ADAPTIKA Vercel Exception Debugger</h2>';
+    echo '<p style="font-size:16px;"><strong>Error:</strong> ' . htmlspecialchars($e->getMessage()) . '</p>';
+    echo '<p style="font-size:14px; color:#4c0519;"><strong>File:</strong> ' . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</p>';
+    echo '<h3 style="color:#9f1239;">Stack Trace:</h3>';
+    echo '<pre style="background:#881337; color:#fff; padding:15px; border-radius:8px; overflow-x:auto; font-size:12px;">' . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+    echo '</div>';
+    exit(0);
+}
