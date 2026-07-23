@@ -1,14 +1,25 @@
 <?php
 
-// Enable verbose error reporting for Vercel debugging
+// Verbose error reporting for Vercel debugging
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-// Force debug mode on Vercel to inspect exact stack traces if error occurs
 putenv('APP_DEBUG=true');
 $_ENV['APP_DEBUG'] = 'true';
 $_SERVER['APP_DEBUG'] = 'true';
+
+// Explicit check for Composer autoload
+$autoloadPath = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoloadPath)) {
+    http_response_code(500);
+    echo '<div style="font-family:sans-serif; padding:30px; background:#fef2f2; border:1px solid #f87171; border-radius:8px; margin:40px;">';
+    echo '<h2 style="color:#991b1b; margin-top:0;">⚠️ Vercel Deployment Error: vendor/autoload.php missing</h2>';
+    echo '<p style="color:#7f1d1d;">Dependencies PHP (Composer) belum terpasang di server Vercel.</p>';
+    echo '<p style="color:#7f1d1d;">Lokasi vendor yang dicari: <code>' . htmlspecialchars($autoloadPath) . '</code></p>';
+    echo '</div>';
+    exit(1);
+}
 
 // Fallback APP_KEY if environment variable is missing on Vercel
 if (!getenv('APP_KEY') && empty($_ENV['APP_KEY'])) {
