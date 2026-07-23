@@ -5,14 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
-$app = Application::configure(basePath: dirname(__DIR__));
-
-// Dynamic storage path for Vercel serverless environment
-if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') || is_dir('/tmp/storage')) {
-    $app->useStoragePath('/tmp/storage');
-}
-
-return $app
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
@@ -28,3 +21,10 @@ return $app
             fn (Request $request) => $request->is('api/*'),
         );
     })->create();
+
+// Customize storage path for Vercel Serverless environment on Application instance
+if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') || is_dir('/tmp/storage')) {
+    $app->useStoragePath('/tmp/storage');
+}
+
+return $app;
