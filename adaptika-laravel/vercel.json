@@ -6,6 +6,10 @@
       "runtime": "vercel-php@0.7.1"
     }
   },
+  "env": {
+    "VERCEL": "1",
+    "APP_STORAGE_PATH": "/tmp/storage"
+  },
   "routes": [
     {
       "src": "/build/(.*)",
