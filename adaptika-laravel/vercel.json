@@ -21,7 +21,7 @@
       "dest": "/public/storage/$1"
     },
     {
-      "src": "/(.*\\.(png|jpg|jpeg|gif|svg|ico|webp|css|js|woff|woff2|ttf|eot))",
+      "src": "/(.*\\.(png|jpg|jpeg|gif|svg|ico|webp|css|js|woff|woff2|ttf|eot|csv))",
       "dest": "/public/$1"
     },
     {
