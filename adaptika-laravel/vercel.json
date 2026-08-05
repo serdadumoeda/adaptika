@@ -6,12 +6,11 @@
       "runtime": "vercel-php@0.7.1"
     }
   },
-  "env": {
-    "VERCEL": "1",
-    "APP_STORAGE_PATH": "/tmp/storage",
-    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views"
-  },
   "routes": [
+    {
+      "src": "/build/(.*)",
+      "dest": "/public/build/$1"
+    },
     {
       "src": "/livewire/(.*)",
       "dest": "/api/index.php"
