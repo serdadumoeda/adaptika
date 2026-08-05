@@ -4,6 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
 
+Route::get('/clean-data', function () {
+    \App\Models\Peserta::query()->delete();
+    \App\Models\Intervensi::query()->delete();
+    if (\Illuminate\Support\Facades\Schema::hasTable('notifications')) {
+        \Illuminate\Support\Facades\DB::table('notifications')->delete();
+    }
+    return response("✅ SUKSES: Seluruh data peserta dan intervensi telah dibersihkan dari database! Jumlah peserta saat ini: " . \App\Models\Peserta::count(), 200);
+});
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

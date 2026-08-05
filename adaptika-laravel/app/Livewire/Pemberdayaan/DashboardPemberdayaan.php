@@ -126,4 +126,14 @@ class DashboardPemberdayaan extends Component
         session()->flash('message_salur', '✅ File CSV data peserta berhasil diunggah dan di-import ke sistem!');
         $this->reset('csvFile');
     }
+
+    public function resetData()
+    {
+        \App\Models\Peserta::query()->delete();
+        \App\Models\Intervensi::query()->delete();
+        if (\Illuminate\Support\Facades\Schema::hasTable('notifications')) {
+            \Illuminate\Support\Facades\DB::table('notifications')->delete();
+        }
+        session()->flash('message_salur', '🗑️ Seluruh data peserta berhasil dibersihkan dari sistem.');
+    }
 }

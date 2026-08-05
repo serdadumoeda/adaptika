@@ -63,10 +63,18 @@ if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === 
 
     $app->booted(function () {
         try {
-            if (\Illuminate\Support\Facades\Schema::hasTable('pesertas') && !\Illuminate\Support\Facades\Schema::hasColumn('pesertas', 'angkatan')) {
-                \Illuminate\Support\Facades\Schema::table('pesertas', function (\Illuminate\Database\Schema\Blueprint $table) {
-                    $table->string('angkatan')->nullable()->default('Batch 1 - 2026');
-                });
+            if (\Illuminate\Support\Facades\Schema::hasTable('pesertas')) {
+                if (!\Illuminate\Support\Facades\Schema::hasColumn('pesertas', 'angkatan')) {
+                    \Illuminate\Support\Facades\Schema::table('pesertas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('angkatan')->nullable()->default('Batch 1 - 2026');
+                    });
+                }
+                // Auto-purge dummy data if Andi, Cahya, or Dina exist
+                $hasDummy = \App\Models\Peserta::whereIn('nama', ['Andi', 'Cahya', 'Dina', 'Gita', 'Putri', 'Udin'])->exists();
+                if ($hasDummy) {
+                    \App\Models\Peserta::query()->delete();
+                    \App\Models\Intervensi::query()->delete();
+                }
             }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Auto-migration error: ' . $e->getMessage());

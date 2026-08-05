@@ -11,9 +11,14 @@
                 </h4>
                 <p class="text-sm text-gray-500 mt-1">Unggah file CSV pendaftaran peserta untuk mengkategorikan diagnosis kuadran (K1-K4) dan mendistribusikan data ke Instruktur & Pengantar Kerja.</p>
             </div>
-            <a href="/Template_Import_ADAPTIKA.csv" download="Template_Import_ADAPTIKA.csv" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-lg shadow transition whitespace-nowrap inline-flex items-center gap-1.5 text-sm cursor-pointer">
-                📥 Unduh Format CSV
-            </a>
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="/Template_Import_ADAPTIKA.csv" download="Template_Import_ADAPTIKA.csv" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-lg shadow transition whitespace-nowrap inline-flex items-center gap-1.5 text-sm cursor-pointer">
+                    📥 Unduh Format CSV
+                </a>
+                <button type="button" wire:click="resetData" onclick="return confirm('Yakin ingin menghapus seluruh data peserta saat ini dari sistem?')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-lg shadow transition whitespace-nowrap inline-flex items-center gap-1.5 text-sm cursor-pointer">
+                    🗑️ Bersihkan Data Peserta
+                </button>
+            </div>
         </div>
 
         <form wire:submit.prevent="importCsv" class="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
