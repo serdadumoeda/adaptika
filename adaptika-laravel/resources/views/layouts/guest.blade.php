@@ -20,12 +20,13 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
             <div class="mb-6 text-center">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="w-14 h-14 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                        <span class="text-white text-2xl font-black">A</span>
-                    </div>
+                <div class="flex items-center justify-center mb-3">
+                    <img
+                        src="{{ asset('logo-adaptika.png') }}"
+                        alt="Logo ADAPTIKA"
+                        class="w-28 h-28 object-contain drop-shadow-[0_0_18px_rgba(99,102,241,0.6)]"
+                    >
                 </div>
-                <h1 class="text-2xl font-bold text-white tracking-wide">ADAPTIKA</h1>
                 <p class="text-sm text-indigo-300 mt-1">Adaptive Talent Intelligence & Psychological Analytics</p>
                 <p class="text-xs text-slate-500 mt-1">Balai Pelatihan Vokasi dan Produktivitas</p>
             </div>
