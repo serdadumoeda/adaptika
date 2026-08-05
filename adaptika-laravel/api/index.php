@@ -7,7 +7,10 @@ $_SERVER['VERCEL'] = '1';
 
 // Prepare writable storage & cache directories in /tmp FIRST
 $storageDirs = [
+    '/tmp/storage/app',
     '/tmp/storage/app/public',
+    '/tmp/storage/app/private',
+    '/tmp/storage/app/livewire-tmp',
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
