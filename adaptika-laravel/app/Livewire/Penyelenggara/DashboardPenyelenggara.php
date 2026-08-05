@@ -133,14 +133,17 @@ class DashboardPenyelenggara extends Component
             return;
         }
 
-        $filename = 'import_' . time() . '.' . $ext;
-        $path = $this->csvFile->storeAs('csv_imports', $filename);
-        $fullPath = storage_path('app/private/' . $path);
-        if (!file_exists($fullPath)) {
-            $fullPath = storage_path('app/' . $path);
+        $realPath = $this->csvFile->getRealPath();
+        if (empty($realPath) || !file_exists($realPath) || is_dir($realPath)) {
+            $filename = 'import_' . time() . '.' . $ext;
+            $path = $this->csvFile->storeAs('csv_imports', $filename);
+            $realPath = storage_path('app/private/' . $path);
+            if (!file_exists($realPath) || is_dir($realPath)) {
+                $realPath = storage_path('app/' . $path);
+            }
         }
 
-        (new \App\Jobs\ImportPesertaCsvJob($fullPath))->handle();
+        (new \App\Jobs\ImportPesertaCsvJob($realPath))->handle();
 
         session()->flash('message', 'File CSV berhasil diunggah dan data peserta berhasil di-import ke sistem!');
         $this->reset('csvFile');

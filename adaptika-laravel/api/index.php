@@ -23,6 +23,7 @@ $storageDirs = [
     '/tmp/storage/app',
     '/tmp/storage/app/public',
     '/tmp/storage/app/private',
+    '/tmp/storage/app/private/csv_imports',
     '/tmp/storage/app/livewire-tmp',
     '/tmp/storage/framework/views',
     '/tmp/storage/framework/cache/data',

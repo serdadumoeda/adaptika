@@ -17,9 +17,17 @@ $app = Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
-        );
+        $exceptions->render(function (\Throwable $e, Request $request) {
+            if ($request->is('livewire/*') || $request->is('api/*')) {
+                \Illuminate\Support\Facades\Log::error('Livewire/API Exception: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+                return response()->json([
+                    'error' => true,
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ], 500);
+            }
+        });
     })->create();
 
 // Customize storage & bootstrap paths for Vercel Serverless environment
@@ -33,6 +41,7 @@ if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === 
         '/tmp/storage/app',
         '/tmp/storage/app/public',
         '/tmp/storage/app/private',
+        '/tmp/storage/app/private/csv_imports',
         '/tmp/storage/app/livewire-tmp',
         '/tmp/storage/framework/views',
         '/tmp/storage/framework/cache/data',

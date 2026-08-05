@@ -31,8 +31,8 @@ class ImportPesertaCsvJob implements ShouldQueue
     {
         Log::info('ImportPesertaCsvJob: Memulai proses import CSV dari ' . $this->filePath);
 
-        if (!file_exists($this->filePath)) {
-            Log::error('ImportPesertaCsvJob: File tidak ditemukan.');
+        if (empty($this->filePath) || !file_exists($this->filePath) || is_dir($this->filePath)) {
+            Log::error('ImportPesertaCsvJob: File tidak valid atau berupa direktori: ' . $this->filePath);
             return;
         }
 
@@ -159,6 +159,6 @@ class ImportPesertaCsvJob implements ShouldQueue
         Log::info("ImportPesertaCsvJob: Import Selesai. $inserted ditambahkan, $skipped dilewati.");
         
         // Hapus file temporary setelah diproses
-        unlink($this->filePath);
+        @unlink($this->filePath);
     }
 }
