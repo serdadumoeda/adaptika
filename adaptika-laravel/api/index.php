@@ -60,7 +60,7 @@ if (!file_exists($autoloadPath)) {
 
 // Fallback APP_KEY if environment variable is missing on Vercel
 if (!getenv('APP_KEY') && empty($_ENV['APP_KEY'])) {
-    $fallbackKey = 'base64:c3VwZXJzZWNyZXRrZXlmb3JhZGFwdGlrYXA2MjAyNg==';
+    $fallbackKey = 'base64:MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=';
     putenv("APP_KEY={$fallbackKey}");
     $_ENV['APP_KEY'] = $fallbackKey;
     $_SERVER['APP_KEY'] = $fallbackKey;
@@ -81,10 +81,32 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
     $seedDb = __DIR__ . '/../database/database_seed.sqlite';
     $tmpDb = '/tmp/database.sqlite';
 
-    if (file_exists($seedDb) && (!file_exists($tmpDb) || filesize($tmpDb) === 0)) {
-        @copy($seedDb, $tmpDb);
+    if (file_exists($seedDb)) {
+        if (!file_exists($tmpDb) || filesize($tmpDb) === 0 || filemtime($seedDb) > filemtime($tmpDb)) {
+            @copy($seedDb, $tmpDb);
+        }
     } elseif (!file_exists($tmpDb)) {
         @touch($tmpDb);
+    }
+
+    // Self-healing schema check for angkatan column
+    if (file_exists($tmpDb) && filesize($tmpDb) > 0) {
+        try {
+            $pdo = new PDO("sqlite:{$tmpDb}");
+            $cols = $pdo->query("PRAGMA table_info(pesertas)")->fetchAll(PDO::FETCH_ASSOC);
+            $hasAngkatan = false;
+            foreach ($cols as $col) {
+                if (($col['name'] ?? '') === 'angkatan') {
+                    $hasAngkatan = true;
+                    break;
+                }
+            }
+            if (!$hasAngkatan) {
+                $pdo->exec("ALTER TABLE pesertas ADD COLUMN angkatan TEXT DEFAULT 'Batch 1 - 2026'");
+            }
+        } catch (\Throwable $e) {
+            // silent catch
+        }
     }
 
     putenv("DB_DATABASE={$tmpDb}");
