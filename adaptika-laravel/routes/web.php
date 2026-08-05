@@ -57,15 +57,17 @@ Route::get('/download/career-passport/{peserta}', function (\App\Models\Peserta 
 
 Route::get('/download/template-csv', function () {
     $filename = 'Template_Import_ADAPTIKA.csv';
-    return response()->streamDownload(function () {
-        $file = fopen('php://output', 'w');
-        fputcsv($file, ['nama', 'kejuruan', 'program_pelatihan', 'skor_logika_numerik', 'skor_spasial_figural', 'kode_riasec', 'profil_riasec', 'angkatan']);
-        fputcsv($file, ['Budi Santoso', 'Teknik Las', 'Juru Las SMAW', 42, 38, 'RSE', 'Realistic-Social-Enterprising', 'Batch 1 (Jan-Mar 2026)']);
-        fputcsv($file, ['Siti Aminah', 'TIK', 'Web Programming', 85, 90, 'ISA', 'Investigative-Social-Artistic', 'Batch 1 (Jan-Mar 2026)']);
-        fputcsv($file, ['Rudi Hermawan', 'Otomotif', 'Teknisi Sepeda Motor', 55, 62, 'IRE', 'Investigative-Realistic-Enterprising', 'Batch 2 (Apr-Jun 2026)']);
-        fclose($file);
-    }, $filename, [
+    $content = "nama,kejuruan,program_pelatihan,skor_logika_numerik,skor_spasial_figural,kode_riasec,profil_riasec,angkatan\n" .
+        "Budi Santoso,Teknik Las,Juru Las SMAW,42,38,RSE,Realistic-Social-Enterprising,Batch 1 (Jan-Mar 2026)\n" .
+        "Siti Aminah,TIK,Web Programming,85,90,ISA,Investigative-Social-Artistic,Batch 1 (Jan-Mar 2026)\n" .
+        "Rudi Hermawan,Otomotif,Teknisi Sepeda Motor,55,62,IRE,Investigative-Realistic-Enterprising,Batch 2 (Apr-Jun 2026)\n";
+
+    return response($content, 200, [
         'Content-Type' => 'text/csv; charset=UTF-8',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        'Cache-Control' => 'no-cache, no-store, must-revalidate',
+        'Pragma' => 'no-cache',
+        'Expires' => '0',
     ]);
 })->middleware(['auth'])->name('download.template-csv');
 
