@@ -23,7 +23,7 @@
             <div class="flex-1">
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Kejuruan</label>
                 <input wire:model="kejuruanNama" type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: Teknik Las, TIK, Otomotif" required>
-                @error('kejuruanNama') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                @if(isset($errors) && $errors->has('kejuruanNama')) <span class="text-red-500 text-xs">{{ $errors->first('kejuruanNama') }}</span> @endif
             </div>
             <div class="flex space-x-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded shadow font-semibold transition">
@@ -47,12 +47,12 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Program Pelatihan</label>
                 <input wire:model="programNama" type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: Juru Las SMAW, Web Programming" required>
-                @error('programNama') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                @if(isset($errors) && $errors->has('programNama')) <span class="text-red-500 text-xs">{{ $errors->first('programNama') }}</span> @endif
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Kode Program (Opsional / dari SIAP Kerja)</label>
                 <input wire:model="programKode" type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Misal: TL-SMAW-01">
-                @error('programKode') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                @if(isset($errors) && $errors->has('programKode')) <span class="text-red-500 text-xs">{{ $errors->first('programKode') }}</span> @endif
             </div>
             <div class="col-span-1 md:col-span-2 flex items-center space-x-3 mt-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg shadow font-semibold transition">

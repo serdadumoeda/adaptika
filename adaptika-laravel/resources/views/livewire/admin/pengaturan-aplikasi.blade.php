@@ -39,13 +39,13 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">SIAP Kerja API URL</label>
                         <input wire:model="apiUrl" type="text" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="https://api.siapkerja.kemnaker.go.id" required>
-                        @error('apiUrl') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        @if(isset($errors) && $errors->has('apiUrl')) <span class="text-red-500 text-xs">{{ $errors->first('apiUrl') }}</span> @endif
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">SIAP Kerja API Key (Bearer Token)</label>
                         <input wire:model="apiKey" type="password" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm" placeholder="Token API keamanan">
                         <p class="text-xs text-gray-400 mt-1">Kosongkan jika ingin berjalan dalam Mode Simulasi (Mock Data).</p>
-                        @error('apiKey') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        @if(isset($errors) && $errors->has('apiKey')) <span class="text-red-500 text-xs">{{ $errors->first('apiKey') }}</span> @endif
                     </div>
 
                     <div class="pt-6 border-t border-gray-100">

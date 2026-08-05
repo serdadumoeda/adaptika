@@ -23,7 +23,9 @@
                 <span wire:loading wire:target="importCsv">⏳ Mengunggah & Memproses...</span>
             </button>
         </form>
-        @error('csvFile') <span class="text-red-500 text-xs block mt-2">{{ $message }}</span> @enderror
+        @if (isset($errors) && $errors->has('csvFile'))
+            <span class="text-red-500 text-xs block mt-2">{{ $errors->first('csvFile') }}</span>
+        @endif
     </div>
 
     <!-- Matriks Penyaluran & Job Matching -->
@@ -98,7 +100,9 @@
                                 <div class="mb-4">
                                     <label class="block text-sm font-bold text-gray-700 mb-2">📄 Log Surat Keputusan Penyaluran</label>
                                     <textarea wire:model="catatan" rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm" placeholder="Misal: Disalurkan secara strategis ke program Inkubasi Wirausaha Mandiri karena tingginya sifat Enterprising..."></textarea>
-                                    @error('catatan') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    @if (isset($errors) && $errors->has('catatan'))
+                                        <span class="text-red-500 text-xs">{{ $errors->first('catatan') }}</span>
+                                    @endif
                                 </div>
                                 <button type="submit" onclick="return confirm('Apakah Anda yakin dengan keputusan penyaluran ini? Keputusan ini bersifat permanen dan akan ditambahkan ke rekam jejak alumni.')" class="w-full bg-green-600 text-white px-4 py-3 rounded shadow hover:bg-green-700 transition font-bold text-sm">
                                     ✅ Simpan & Finalisasi Penyaluran

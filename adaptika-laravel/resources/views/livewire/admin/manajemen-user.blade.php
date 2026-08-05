@@ -27,17 +27,17 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
                     <input wire:model="name" type="text" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Nama lengkap" required>
-                    @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @if(isset($errors) && $errors->has('name')) <span class="text-red-500 text-xs">{{ $errors->first('name') }}</span> @endif
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
                     <input wire:model="email" type="email" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="user@adaptika.id" required>
-                    @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @if(isset($errors) && $errors->has('email')) <span class="text-red-500 text-xs">{{ $errors->first('email') }}</span> @endif
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Password {{ $editingUserId ? '(kosongkan jika tidak ingin ubah)' : '' }}</label>
                     <input wire:model="password" type="password" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="{{ $editingUserId ? '••••••••' : 'Minimal 8 karakter' }}" {{ $editingUserId ? '' : 'required' }}>
-                    @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @if(isset($errors) && $errors->has('password')) <span class="text-red-500 text-xs">{{ $errors->first('password') }}</span> @endif
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Role / Peran</label>

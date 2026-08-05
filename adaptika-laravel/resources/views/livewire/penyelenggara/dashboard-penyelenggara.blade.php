@@ -252,7 +252,9 @@
                 
                 <form wire:submit.prevent="saveKeputusan">
                     <textarea wire:model="catatanManajerial" rows="4" class="w-full border-gray-300 rounded-md shadow-sm mb-3 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ketik tindakan manajemen di sini..."></textarea>
-                    @error('catatanManajerial') <span class="text-red-500 text-xs block mb-2">{{ $message }}</span> @enderror
+                    @if(isset($errors) && $errors->has('catatanManajerial'))
+                        <span class="text-red-500 text-xs block mb-2">{{ $errors->first('catatanManajerial') }}</span>
+                    @endif
                     <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full font-semibold">Simpan Keputusan Manajerial</button>
                 </form>
             @endif
