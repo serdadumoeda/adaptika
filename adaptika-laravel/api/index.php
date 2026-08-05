@@ -80,12 +80,13 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
 
     $seedDb = __DIR__ . '/../database/database_seed.sqlite';
     $tmpDb = '/tmp/database.sqlite';
+    $tmpVerFile = '/tmp/db_seed_version.txt';
+    $seedVer = file_exists($seedDb) ? filesize($seedDb) . '_' . filemtime($seedDb) : '0';
+    $currentVer = file_exists($tmpVerFile) ? @file_get_contents($tmpVerFile) : '';
 
-    if (file_exists($seedDb)) {
-        if (!file_exists($tmpDb) || filesize($tmpDb) === 0 || filemtime($seedDb) !== filemtime($tmpDb)) {
-            @copy($seedDb, $tmpDb);
-            @touch($tmpDb, filemtime($seedDb));
-        }
+    if (file_exists($seedDb) && (!file_exists($tmpDb) || filesize($tmpDb) === 0 || $currentVer !== $seedVer)) {
+        @copy($seedDb, $tmpDb);
+        @file_put_contents($tmpVerFile, $seedVer);
     } elseif (!file_exists($tmpDb)) {
         @touch($tmpDb);
     }
