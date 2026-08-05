@@ -8,12 +8,11 @@
   },
   "routes": [
     {
-      "src": "/build/(.*)",
-      "dest": "/public/build/$1"
-    },
-    {
       "src": "/livewire/(.*)",
       "dest": "/api/index.php"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
