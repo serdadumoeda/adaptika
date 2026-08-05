@@ -5,6 +5,14 @@ putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['SERVER_PORT'] = '443';
+}
+putenv('APP_URL=https://adaptika-bpvp.vercel.app');
+$_ENV['APP_URL'] = 'https://adaptika-bpvp.vercel.app';
+$_SERVER['APP_URL'] = 'https://adaptika-bpvp.vercel.app';
+
 @ini_set('upload_tmp_dir', '/tmp');
 @ini_set('upload_max_filesize', '32M');
 @ini_set('post_max_size', '32M');
