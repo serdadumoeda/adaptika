@@ -93,9 +93,18 @@ class DashboardPemberdayaan extends Component
 
     public function importCsv()
     {
-        $this->validate(['csvFile' => 'required|mimes:csv,txt|max:4096']);
+        $this->validate([
+            'csvFile' => 'required|file|max:10240',
+        ]);
 
-        $path = $this->csvFile->storeAs('csv_imports', 'import_' . time() . '.csv');
+        $ext = strtolower($this->csvFile->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt'])) {
+            $this->addError('csvFile', 'Format file harus berupa .csv atau .txt');
+            return;
+        }
+
+        $filename = 'import_' . time() . '.' . $ext;
+        $path = $this->csvFile->storeAs('csv_imports', $filename);
         $fullPath = storage_path('app/private/' . $path);
         if (!file_exists($fullPath)) {
             $fullPath = storage_path('app/' . $path);

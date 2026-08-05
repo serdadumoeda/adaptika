@@ -123,12 +123,20 @@ class DashboardPenyelenggara extends Component
         // FIX #2: Guard backend — Kepala Balai tidak boleh import data
         $this->assertWriteAccess();
 
-        $this->validate(['csvFile' => 'required|mimes:csv,txt|max:2048']);
+        $this->validate([
+            'csvFile' => 'required|file|max:10240',
+        ]);
 
-        // Simpan file sementara untuk diproses oleh Queue Worker
-        $path = $this->csvFile->storeAs('csv_imports', 'import_' . time() . '.csv');
+        $ext = strtolower($this->csvFile->getClientOriginalExtension());
+        if (!in_array($ext, ['csv', 'txt'])) {
+            $this->addError('csvFile', 'Format file harus berupa .csv atau .txt');
+            return;
+        }
+
+        $filename = 'import_' . time() . '.' . $ext;
+        $path = $this->csvFile->storeAs('csv_imports', $filename);
         $fullPath = storage_path('app/private/' . $path);
-        if(!file_exists($fullPath)) {
+        if (!file_exists($fullPath)) {
             $fullPath = storage_path('app/' . $path);
         }
 

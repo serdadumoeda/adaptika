@@ -24,6 +24,11 @@ $app = Application::configure(basePath: dirname(__DIR__))
 
 // Customize storage & bootstrap paths for Vercel Serverless environment
 if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === '1') {
+    @ini_set('upload_tmp_dir', '/tmp');
+    @ini_set('upload_max_filesize', '32M');
+    @ini_set('post_max_size', '32M');
+    @ini_set('memory_limit', '256M');
+
     $dirs = [
         '/tmp/storage/app',
         '/tmp/storage/app/public',

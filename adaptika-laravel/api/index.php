@@ -5,6 +5,11 @@ putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
+@ini_set('upload_tmp_dir', '/tmp');
+@ini_set('upload_max_filesize', '32M');
+@ini_set('post_max_size', '32M');
+@ini_set('memory_limit', '256M');
+
 // Prepare writable storage & cache directories in /tmp FIRST
 $storageDirs = [
     '/tmp/storage/app',
