@@ -51,8 +51,12 @@
 @endphp
 
     <div class="header">
-        @if($logoKemnakerPath)
+        @if(extension_loaded('gd') && $logoKemnakerPath)
             <img src="data:image/png;base64,{{ base64_encode(file_get_contents($logoKemnakerPath)) }}" style="height: 70px; margin-bottom: 12px;" alt="Logo Kemnaker">
+        @else
+            <div style="display: inline-block; background-color: #0f172a; color: #ffffff; padding: 6px 16px; border-radius: 4px; font-weight: bold; font-size: 11px; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase;">
+                KEMENTERIAN KETENAGAKERJAAN RI &bull; BPVP
+            </div>
         @endif
         <h1>Laporan Indeks Kesiapan BPVP</h1>
         <p>ADAPTIKA - Human-Centric & Psychological Analytics System</p>
