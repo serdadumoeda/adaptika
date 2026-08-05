@@ -64,6 +64,8 @@ $storageDirs = [
     '/tmp/storage/framework/cache/data',
     '/tmp/storage/framework/sessions',
     '/tmp/storage/logs',
+    '/tmp/storage/fonts',
+    '/tmp/storage/temp',
     '/tmp/bootstrap/cache'
 ];
 
