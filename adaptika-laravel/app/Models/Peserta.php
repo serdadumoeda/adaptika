@@ -12,6 +12,7 @@ class Peserta extends Model
         'nama',
         'kejuruan',
         'program_pelatihan',
+        'angkatan',
         'skor_logika_numerik',
         'skor_spasial_figural',
         'kode_riasec',

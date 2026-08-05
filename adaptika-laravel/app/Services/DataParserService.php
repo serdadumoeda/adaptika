@@ -69,9 +69,13 @@ class DataParserService
 
             $diagnosisAwal = \App\Models\Peserta::calculateDiagnosis($numScore, $figScore, $kejuruan, $riasecCode);
 
+            $angkatan = $row['angkatan'] ?? $row['batch'] ?? $row['periode'] ?? 'Batch 1 - 2026';
+
             $parsedData[] = [
                 'nama' => $nama,
                 'kejuruan' => $kejuruan,
+                'program_pelatihan' => $row['program_pelatihan'] ?? $row['program'] ?? $kejuruan,
+                'angkatan' => $angkatan,
                 'skor_logika_numerik' => $numScore,
                 'skor_spasial_figural' => $figScore,
                 'kode_riasec' => $riasecCode,
