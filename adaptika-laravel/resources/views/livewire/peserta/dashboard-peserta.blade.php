@@ -48,9 +48,9 @@
                     <h5 class="font-bold text-lg mb-3">Rekomendasi Ekosistem Kerja:</h5>
                     <p class="text-gray-800 leading-relaxed mb-6">{!! nl2br(e($careerPassport['rekomendasi_ekosistem'] ?? 'Data tidak tersedia')) !!}</p>
                     
-                    <button wire:click="downloadPassportPdf" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700 font-semibold w-full">
+                    <a href="{{ route('download.career-passport', ['peserta' => $peserta->id]) }}" target="_blank" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700 font-semibold w-full inline-block text-center">
                         📥 Download Dokumen PDF (Siap Cetak)
-                    </button>
+                    </a>
                 </div>
             @endif
         </div>

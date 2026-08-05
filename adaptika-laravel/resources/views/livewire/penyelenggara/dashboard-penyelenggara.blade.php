@@ -41,9 +41,9 @@
             <h4 class="font-bold text-lg">🏛️ Laporan Indeks Kesiapan BPVP</h4>
             <p class="text-sm text-gray-500 mb-4">Unduh Laporan PDF komprehensif untuk Kepala Balai dan log CSV untuk audit trail kemnaker.</p>
             <div class="flex space-x-3">
-                <button wire:click="downloadPdf" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 shadow font-semibold">
+                <a href="{{ route('download.laporan-kesiapan', ['kejuruan' => $filterKejuruan]) }}" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 shadow font-semibold inline-flex items-center gap-1">
                     📥 Unduh PDF Laporan
-                </button>
+                </a>
                 <button wire:click="downloadCsv" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow font-semibold">
                     📥 Unduh CSV Audit
                 </button>
@@ -338,9 +338,9 @@
         <h4 class="font-bold text-lg">🏛️ Laporan Indeks Kesiapan BPVP</h4>
         <p class="text-sm text-gray-500 mb-4">Unduh Laporan PDF komprehensif untuk Kepala Balai dan log CSV untuk audit trail kemnaker.</p>
         <div class="flex space-x-3">
-            <button wire:click="downloadPdf" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 shadow font-semibold">
+            <a href="{{ route('download.laporan-kesiapan', ['kejuruan' => $filterKejuruan]) }}" target="_blank" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 shadow font-semibold inline-flex items-center gap-1">
                 📥 Unduh PDF Laporan
-            </button>
+            </a>
             <button wire:click="downloadCsv" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow font-semibold">
                 📥 Unduh CSV Audit
             </button>

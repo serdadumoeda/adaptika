@@ -5,6 +5,24 @@ putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
+// Prepare writable storage & cache directories in /tmp FIRST
+$storageDirs = [
+    '/tmp/storage/app/public',
+    '/tmp/storage/framework/views',
+    '/tmp/storage/framework/cache/data',
+    '/tmp/storage/framework/sessions',
+    '/tmp/storage/logs',
+    '/tmp/storage/fonts',
+    '/tmp/storage/temp',
+    '/tmp/bootstrap/cache'
+];
+
+foreach ($storageDirs as $dir) {
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+}
+
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 $_ENV['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
 $_SERVER['VIEW_COMPILED_PATH'] = '/tmp/storage/framework/views';
@@ -55,24 +73,6 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
     putenv("DB_DATABASE={$tmpDb}");
     $_ENV['DB_DATABASE'] = $tmpDb;
     $_SERVER['DB_DATABASE'] = $tmpDb;
-}
-
-// Prepare writable storage directories in /tmp for Vercel Serverless environment
-$storageDirs = [
-    '/tmp/storage/app/public',
-    '/tmp/storage/framework/views',
-    '/tmp/storage/framework/cache/data',
-    '/tmp/storage/framework/sessions',
-    '/tmp/storage/logs',
-    '/tmp/storage/fonts',
-    '/tmp/storage/temp',
-    '/tmp/bootstrap/cache'
-];
-
-foreach ($storageDirs as $dir) {
-    if (!is_dir($dir)) {
-        @mkdir($dir, 0755, true);
-    }
 }
 
 // Forward request to Laravel public entrypoint
