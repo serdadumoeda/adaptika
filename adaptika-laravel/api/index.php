@@ -93,10 +93,11 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
     if (file_exists($tmpDb) && filesize($tmpDb) > 0) {
         try {
             $pdo = new PDO("sqlite:{$tmpDb}");
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $cols = $pdo->query("PRAGMA table_info(pesertas)")->fetchAll(PDO::FETCH_ASSOC);
             $hasAngkatan = false;
             foreach ($cols as $col) {
-                if (($col['name'] ?? '') === 'angkatan') {
+                if (strtolower($col['name'] ?? '') === 'angkatan') {
                     $hasAngkatan = true;
                     break;
                 }
@@ -105,7 +106,9 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
                 $pdo->exec("ALTER TABLE pesertas ADD COLUMN angkatan TEXT DEFAULT 'Batch 1 - 2026'");
             }
         } catch (\Throwable $e) {
-            // silent catch
+            if (file_exists($seedDb)) {
+                @copy($seedDb, $tmpDb);
+            }
         }
     }
 

@@ -60,6 +60,18 @@ if (isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL']) || getenv('VERCEL') === 
     if (method_exists($app, 'useBootstrapPath')) {
         $app->useBootstrapPath('/tmp/bootstrap');
     }
+
+    $app->booted(function () {
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('pesertas') && !\Illuminate\Support\Facades\Schema::hasColumn('pesertas', 'angkatan')) {
+                \Illuminate\Support\Facades\Schema::table('pesertas', function (\Illuminate\Database\Schema\Blueprint $table) {
+                    $table->string('angkatan')->nullable()->default('Batch 1 - 2026');
+                });
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Auto-migration error: ' . $e->getMessage());
+        }
+    });
 }
 
 return $app;
