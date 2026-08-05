@@ -35,6 +35,9 @@
 <body>
 
     <div class="header">
+        @if(file_exists(public_path('logo-kemnaker.png')))
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('logo-kemnaker.png'))) }}" style="height: 70px; margin-bottom: 12px;" alt="Logo Kemnaker">
+        @endif
         <h1>Laporan Indeks Kesiapan BPVP</h1>
         <p>ADAPTIKA - Human-Centric & Psychological Analytics System</p>
         <p>Tanggal Ekspor: {{ \Carbon\Carbon::now()->translatedFormat('d F Y H:i:s') }}</p>

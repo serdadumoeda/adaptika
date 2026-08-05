@@ -24,6 +24,9 @@
 <body>
 
     <div class="header">
+        @if(file_exists(public_path('logo-kemnaker.png')))
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('logo-kemnaker.png'))) }}" style="height: 65px; margin-bottom: 10px;" alt="Logo Kemnaker">
+        @endif
         <h1>Career Passport</h1>
         <p>Suplemen Kompetensi Talenta & Rekomendasi Vokasional</p>
     </div>
