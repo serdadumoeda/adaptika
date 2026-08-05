@@ -16,7 +16,9 @@
         <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @if (file_exists(public_path('build/manifest.json')) && !isset($_SERVER['VERCEL']))
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @endif
         
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
