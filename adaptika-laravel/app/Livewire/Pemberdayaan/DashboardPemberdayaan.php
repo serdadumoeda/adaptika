@@ -20,6 +20,8 @@ class DashboardPemberdayaan extends Component
         \Illuminate\Support\Facades\Gate::authorize('access-pemberdayaan');
     }
 
+    use \Livewire\WithPagination;
+
     public function render()
     {
         $pesertaKompeten = \App\Models\Peserta::whereIn('status_kelulusan', ['Kompeten', 'Belum Kompeten'])
@@ -27,12 +29,17 @@ class DashboardPemberdayaan extends Component
 
         $totalOwned = \App\Models\Peserta::whereIn('status_kelulusan', ['Kompeten', 'Belum Kompeten'])->count();
 
+        $allPesertas = \App\Models\Peserta::latest()->paginate(10);
+        $totalImported = \App\Models\Peserta::count();
+
         $selectedPeserta = $this->pesertaId ? $this->findScopedPeserta($this->pesertaId) : null;
 
         return view('livewire.pemberdayaan.dashboard-pemberdayaan', [
             'pesertaKompeten' => $pesertaKompeten,
             'selectedPeserta' => $selectedPeserta,
             'totalOwned' => $totalOwned,
+            'allPesertas' => $allPesertas,
+            'totalImported' => $totalImported,
         ]);
     }
 

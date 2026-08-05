@@ -28,6 +28,77 @@
         @endif
     </div>
 
+    <!-- Ringkasan Intake Data Peserta yang Telah Di-Import -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6 border-t-4 border-indigo-500">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h4 class="font-bold text-lg text-slate-800">📋 Ringkasan Data Peserta Intake (Ter-Import)</h4>
+                <p class="text-sm text-gray-500">Seluruh data pendaftaran peserta dari SIAPkerja/SiapLatih beserta status pendistribusiannya.</p>
+            </div>
+            <span class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-xs">Total: {{ $totalImported }} Peserta</span>
+        </div>
+
+        @if($allPesertas->isEmpty())
+            <div class="bg-gray-50 border-l-4 border-gray-400 p-4">
+                <p class="text-gray-700 text-sm">📭 Belum ada data peserta yang ter-import.</p>
+            </div>
+        @else
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Nama Peserta</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Kejuruan / Program</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Angkatan</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Diagnosis Awal</th>
+                            <th class="px-4 py-3 text-left font-semibold text-gray-700">Status Alur Pelatihan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @foreach($allPesertas as $p)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-3 font-medium text-gray-900">{{ $p->nama }}</td>
+                            <td class="px-4 py-3 text-gray-600">
+                                <strong>{{ $p->kejuruan }}</strong>
+                                @if($p->program_pelatihan)
+                                    <br><span class="text-xs text-gray-500">{{ $p->program_pelatihan }}</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-gray-600">
+                                <span class="px-2 py-0.5 text-xs font-semibold bg-gray-100 rounded">{{ $p->angkatan ?? 'Batch 1' }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-gray-600">
+                                <span class="text-xs font-bold text-indigo-700">{{ $p->diagnosis_awal }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-xs space-y-1">
+                                <div>
+                                    @if($p->status_instruktur === 'Sudah Ditangani')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-100 text-green-800">✅ Instruktur Selesai</span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-yellow-800">⏳ Menunggu Instruktur</span>
+                                    @endif
+                                </div>
+                                <div>
+                                    @if($p->status_kelulusan === 'Kompeten')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">🏆 Lulus Kompeten</span>
+                                    @elseif($p->status_kelulusan === 'Belum Kompeten')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800">❌ Belum Kompeten</span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600">⏳ Belum Evaluasi</span>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+                {{ $allPesertas->links() }}
+            </div>
+        @endif
+    </div>
+
     <!-- Matriks Penyaluran & Job Matching -->
     <div class="bg-white shadow rounded-lg p-6 border-t-4 border-teal-500">
         <h4 class="font-bold text-lg mb-2">Matriks Penyaluran Tenaga Kerja Strategis (Alumni BPVP)</h4>
