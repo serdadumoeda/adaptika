@@ -19,6 +19,9 @@
                 <span wire:loading.remove wire:target="importCsv">🚀 Import CSV Data</span>
                 <span wire:loading wire:target="importCsv">⏳ Mengunggah & Memproses...</span>
             </button>
+            <a href="{{ route('download.template-csv') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-lg shadow transition whitespace-nowrap inline-flex items-center justify-center gap-1.5 text-sm">
+                📥 Unduh Format CSV
+            </a>
         </form>
         @error('csvFile') <span class="text-red-500 text-xs block mt-2">{{ $message }}</span> @enderror
     </div>

@@ -344,6 +344,9 @@
             <button wire:click="downloadCsv" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 shadow font-semibold">
                 📥 Unduh CSV Audit
             </button>
+            <a href="{{ route('download.template-csv') }}" class="bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 shadow font-semibold inline-flex items-center gap-1">
+                📥 Format CSV
+            </a>
         </div>
     </div>
     @endif
