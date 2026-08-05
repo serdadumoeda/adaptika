@@ -44,50 +44,97 @@ class ImportPesertaCsvJob implements ShouldQueue
         $countPengantar = 0; // K3 & K4
 
         foreach (array_slice($data, 1) as $row) {
-            if (count($row) >= 7) {
-                $nama      = trim($row[0]);
-                $kejuruan  = trim($row[1]);
-                $program   = trim($row[2]);
-                $num       = (int) $row[3];
-                $fig       = (int) $row[4];
-                $riasecCode = trim($row[5]);
-                $riasecDesc = trim($row[6] ?? '');
+            if (count($row) < 3) continue;
 
-                $exists = \App\Models\Peserta::where('nama', $nama)
-                    ->where('kejuruan', $kejuruan)
-                    ->exists();
+            $nama = '';
+            $kejuruan = '';
+            $program = '';
+            $num = 0;
+            $fig = 0;
+            $riasecCode = '';
+            $riasecDesc = '';
+            $angkatan = 'Batch 1 - 2026';
 
-                if ($exists) {
-                    $skipped++;
-                    continue;
+            // Cek jika kolom mengandung JSON (Format SIAPkerja Raw Export)
+            $isRawSiapkerja = false;
+            foreach ($row as $col) {
+                if (is_string($col) && (str_contains($col, 'detail_jawaban_siaplatih') || str_contains($col, 'test_result') || str_contains($col, 'hasil_asesmen'))) {
+                    $isRawSiapkerja = true;
+                    break;
                 }
-
-                $diagnosis = \App\Models\Peserta::calculateDiagnosis($num, $fig, $kejuruan, $riasecCode);
-
-                \App\Models\Peserta::create([
-                    'nama'                => $nama,
-                    'kejuruan'            => $kejuruan,
-                    'program_pelatihan'   => $program,
-                    'skor_logika_numerik' => $num,
-                    'skor_spasial_figural' => $fig,
-                    'kode_riasec'         => $riasecCode,
-                    'profil_riasec'       => $riasecDesc,
-                    'diagnosis_awal'      => $diagnosis,
-                    'status_kelulusan'    => 'Belum Dievaluasi',
-                    'status_instruktur'   => 'Belum Ditangani',
-                    'status_pengantar_kerja' => 'Belum Ditangani',
-                    'status_pemberdayaan' => 'Belum Disalurkan',
-                ]);
-
-                if (str_contains($diagnosis, 'Pendampingan') || str_contains($diagnosis, 'Perhatian')) {
-                    $countInstruktur++;
-                }
-                if (str_contains($diagnosis, 'Eksplorasi') || str_contains($diagnosis, 'Perhatian')) {
-                    $countPengantar++;
-                }
-
-                $inserted++;
             }
+
+            if ($isRawSiapkerja || (isset($row[6]) && str_contains($row[6], '{'))) {
+                // Format SIAPkerja Raw Export (seperti test.csv)
+                $nama = trim($row[1] ?? $row[0]);
+                $kejuruan = trim($row[4] ?? $row[1]);
+                $program = $kejuruan;
+                
+                if (isset($row[6]) && str_contains($row[6], '{')) {
+                    $json = json_decode($row[6], true);
+                    $testResults = $json['detail']['test_result'] ?? [];
+                    foreach ($testResults as $t) {
+                        $tName = $t['name'] ?? '';
+                        if (str_contains($tName, 'Numerik')) $num = (int)($t['value'] ?? 0);
+                        if (str_contains($tName, 'Figural')) $fig = (int)($t['value'] ?? 0);
+                    }
+                }
+                
+                if (isset($row[8]) && str_contains($row[8], '{')) {
+                    $jsonSpi = json_decode($row[8], true);
+                    $hasil = $jsonSpi['hasil_asesmen'][0] ?? [];
+                    $riasecCode = $hasil['riasec'] ?? '';
+                    $riasecDesc = $hasil['deskripsi'] ?? '';
+                }
+            } else {
+                // Format Sederhana / Standard CSV ADAPTIKA
+                $nama = trim($row[0]);
+                $kejuruan = trim($row[1]);
+                $program = trim($row[2] ?? $kejuruan);
+                $num = (int) ($row[3] ?? 0);
+                $fig = (int) ($row[4] ?? 0);
+                $riasecCode = trim($row[5] ?? '');
+                $riasecDesc = trim($row[6] ?? '');
+                $angkatan = trim($row[7] ?? 'Batch 1 - 2026');
+            }
+
+            if (empty($nama) || empty($kejuruan)) continue;
+
+            $exists = \App\Models\Peserta::where('nama', $nama)
+                ->where('kejuruan', $kejuruan)
+                ->exists();
+
+            if ($exists) {
+                $skipped++;
+                continue;
+            }
+
+            $diagnosis = \App\Models\Peserta::calculateDiagnosis($num, $fig, $kejuruan, $riasecCode);
+
+            \App\Models\Peserta::create([
+                'nama'                => $nama,
+                'kejuruan'            => $kejuruan,
+                'program_pelatihan'   => $program,
+                'angkatan'            => $angkatan,
+                'skor_logika_numerik' => $num,
+                'skor_spasial_figural' => $fig,
+                'kode_riasec'         => $riasecCode,
+                'profil_riasec'       => $riasecDesc,
+                'diagnosis_awal'      => $diagnosis,
+                'status_kelulusan'    => 'Belum Dievaluasi',
+                'status_instruktur'   => 'Belum Ditangani',
+                'status_pengantar_kerja' => 'Belum Ditangani',
+                'status_pemberdayaan' => 'Belum Disalurkan',
+            ]);
+
+            if (str_contains($diagnosis, 'Pendampingan') || str_contains($diagnosis, 'Perhatian')) {
+                $countInstruktur++;
+            }
+            if (str_contains($diagnosis, 'Eksplorasi') || str_contains($diagnosis, 'Perhatian')) {
+                $countPengantar++;
+            }
+
+            $inserted++;
         }
 
         // Kirim Notifikasi
