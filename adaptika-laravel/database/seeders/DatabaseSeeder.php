@@ -108,54 +108,7 @@ PROMPT
             }
         }
 
-        // 2. Seed Peserta Pelatihan
-        $riasecProfiles = [
-            'RIA' => 'Realistic-Investigative-Artistic',
-            'SEC' => 'Social-Enterprising-Conventional',
-            'ISA' => 'Investigative-Social-Artistic',
-            'CER' => 'Conventional-Enterprising-Realistic',
-            'EAS' => 'Enterprising-Artistic-Social',
-            'RSE' => 'Realistic-Social-Enterprising',
-            'IRE' => 'Investigative-Realistic-Enterprising',
-        ];
-        $riasecCodes = array_keys($riasecProfiles);
-        $namaDepan = ['Andi', 'Budi', 'Cahya', 'Dina', 'Eka', 'Fajar', 'Gita', 'Hadi', 'Indra', 'Joko', 'Kartini', 'Lina', 'Maya', 'Nita', 'Oka', 'Putri', 'Rizki', 'Sari', 'Tono', 'Udin', 'Vina', 'Wati', 'Xena', 'Yuni', 'Zaki', 'Arif', 'Bayu', 'Citra', 'Dewi', 'Elsa'];
-
-        $allPrograms = Program::with('kejuruan')->get();
-        $pesertasCreated = [];
-
-        $batches = [
-            'Batch 1 (Jan-Mar 2026)',
-            'Batch 2 (Apr-Jun 2026)',
-            'Batch 3 (Jul-Sep 2026)',
-        ];
-
-        for ($i = 0; $i < 30; $i++) {
-            $num = rand(30, 95);
-            $fig = rand(30, 95);
-            
-            $prog = $allPrograms->random();
-            $riasecCode = $riasecCodes[array_rand($riasecCodes)];
-            $angkatanChoice = $batches[$i % 3];
-            
-            // Logika kuadran terunifikasi
-            $diagnosis = Peserta::calculateDiagnosis($num, $fig, $prog->kejuruan->nama, $riasecCode);
-
-            $peserta = Peserta::create([
-                'nama' => ($i === 0) ? 'Andi' : $namaDepan[$i], // Pastikan Andi ada di urutan pertama
-                'kejuruan' => $prog->kejuruan->nama,
-                'program_pelatihan' => $prog->nama,
-                'angkatan' => $angkatanChoice,
-                'skor_logika_numerik' => $num,
-                'skor_spasial_figural' => $fig,
-                'kode_riasec' => $riasecCode,
-                'profil_riasec' => $riasecProfiles[$riasecCode],
-                'diagnosis_awal' => $diagnosis,
-            ]);
-            $pesertasCreated[] = $peserta;
-        }
-
-        // 3. Seed Users
+        // 2. Seed Users
         $roles = [
             'Superadmin',
             'Penyelenggara',
@@ -168,10 +121,6 @@ PROMPT
 
         foreach ($roles as $idx => $role) {
             $pesertaId = null;
-            if ($role === 'Peserta Pelatihan') {
-                $pesertaAndi = collect($pesertasCreated)->firstWhere('nama', 'Andi');
-                $pesertaId = $pesertaAndi ? $pesertaAndi->id : null;
-            }
 
             User::factory()->create([
                 'name' => $role === 'Peserta Pelatihan' ? 'Andi' : 'User ' . $role,

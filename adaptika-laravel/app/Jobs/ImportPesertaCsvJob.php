@@ -36,15 +36,63 @@ class ImportPesertaCsvJob implements ShouldQueue
             return;
         }
 
-        $data = array_map('str_getcsv', file($this->filePath));
+        $rawLines = file($this->filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if (empty($rawLines)) {
+            Log::error('ImportPesertaCsvJob: File CSV kosong.');
+            return;
+        }
+
+        // Auto-detect delimiter from first line
+        $firstLine = $rawLines[0];
+        $delimiters = [';' => 0, ',' => 0, "\t" => 0, '|' => 0];
+        foreach ($delimiters as $delim => $c) {
+            $delimiters[$delim] = substr_count($firstLine, $delim);
+        }
+        arsort($delimiters);
+        $delimiter = key($delimiters);
+        if ($delimiters[$delimiter] === 0) {
+            $delimiter = ',';
+        }
+
+        // Parse lines into array of rows using detected delimiter
+        $rows = [];
+        foreach ($rawLines as $line) {
+            $cleanLine = preg_replace('/^[\xEF\xBB\xBF]/', '', trim($line));
+            if (empty($cleanLine)) continue;
+            $row = str_getcsv($cleanLine, $delimiter);
+            if (count($row) >= 1) {
+                $rows[] = array_map(fn($v) => trim($v, " \t\n\r\0\x0B\"'\xEF\xBB\xBF"), $row);
+            }
+        }
+
+        if (empty($rows)) return;
+
+        // Header detection
+        $header = array_map('strtolower', $rows[0]);
+        $hasHeader = false;
+        $colIndex = [];
+        
+        foreach ($header as $idx => $colName) {
+            if (str_contains($colName, 'nama')) { $hasHeader = true; $colIndex['nama'] = $idx; }
+            if (str_contains($colName, 'kejuruan')) { $hasHeader = true; $colIndex['kejuruan'] = $idx; }
+            if (str_contains($colName, 'program')) { $hasHeader = true; $colIndex['program'] = $idx; }
+            if (str_contains($colName, 'numerik') || str_contains($colName, 'logika')) { $hasHeader = true; $colIndex['num'] = $idx; }
+            if (str_contains($colName, 'figural') || str_contains($colName, 'spasial')) { $hasHeader = true; $colIndex['fig'] = $idx; }
+            if (str_contains($colName, 'riasec') || str_contains($colName, 'kode')) { $hasHeader = true; $colIndex['riasec'] = $idx; }
+            if (str_contains($colName, 'profil') || str_contains($colName, 'deskripsi')) { $hasHeader = true; $colIndex['profil'] = $idx; }
+            if (str_contains($colName, 'angkatan') || str_contains($colName, 'batch')) { $hasHeader = true; $colIndex['angkatan'] = $idx; }
+        }
+
         $inserted = 0;
         $skipped  = 0;
-        
         $countInstruktur = 0; // K2 & K4
         $countPengantar = 0; // K3 & K4
 
-        foreach (array_slice($data, 1) as $row) {
-            if (count($row) < 3) continue;
+        $startIndex = $hasHeader ? 1 : 0;
+
+        for ($i = $startIndex; $i < count($rows); $i++) {
+            $row = $rows[$i];
+            if (empty($row) || (count($row) === 1 && empty($row[0]))) continue;
 
             $nama = '';
             $kejuruan = '';
@@ -86,10 +134,20 @@ class ImportPesertaCsvJob implements ShouldQueue
                     $riasecCode = $hasil['riasec'] ?? '';
                     $riasecDesc = $hasil['deskripsi'] ?? '';
                 }
+            } elseif ($hasHeader) {
+                // Header-based mapping
+                $nama = trim($row[$colIndex['nama'] ?? 0] ?? '');
+                $kejuruan = trim($row[$colIndex['kejuruan'] ?? 1] ?? '');
+                $program = trim($row[$colIndex['program'] ?? 2] ?? $kejuruan);
+                $num = (int) ($row[$colIndex['num'] ?? 3] ?? 0);
+                $fig = (int) ($row[$colIndex['fig'] ?? 4] ?? 0);
+                $riasecCode = trim($row[$colIndex['riasec'] ?? 5] ?? '');
+                $riasecDesc = trim($row[$colIndex['profil'] ?? 6] ?? '');
+                $angkatan = trim($row[$colIndex['angkatan'] ?? 7] ?? 'Batch 1 - 2026');
             } else {
-                // Format Sederhana / Standard CSV ADAPTIKA
-                $nama = trim($row[0]);
-                $kejuruan = trim($row[1]);
+                // Format Sederhana / Positional mapping fallback
+                $nama = trim($row[0] ?? '');
+                $kejuruan = trim($row[1] ?? '');
                 $program = trim($row[2] ?? $kejuruan);
                 $num = (int) ($row[3] ?? 0);
                 $fig = (int) ($row[4] ?? 0);

@@ -82,8 +82,9 @@ if (empty($_ENV['DB_HOST']) && empty(getenv('DB_HOST'))) {
     $tmpDb = '/tmp/database.sqlite';
 
     if (file_exists($seedDb)) {
-        if (!file_exists($tmpDb) || filesize($tmpDb) === 0 || filemtime($seedDb) > filemtime($tmpDb)) {
+        if (!file_exists($tmpDb) || filesize($tmpDb) === 0 || filemtime($seedDb) !== filemtime($tmpDb)) {
             @copy($seedDb, $tmpDb);
+            @touch($tmpDb, filemtime($seedDb));
         }
     } elseif (!file_exists($tmpDb)) {
         @touch($tmpDb);
