@@ -1,6 +1,27 @@
 <div class="p-6">
-    <h3 class="text-2xl font-bold mb-4">🤝 Dasbor Pemberdayaan: Penempatan Kerja & Inkubasi</h3>
+    <h3 class="text-2xl font-bold mb-2">🤝 Dasbor Pemberdayaan: Penempatan Kerja & Inkubasi</h3>
     <p class="text-gray-600 mb-6">Fokus: Memastikan lulusan BPVP disalurkan ke lingkungan industri yang sejalan dengan kapabilitas dan karakter mereka untuk menekan angka resign dini.</p>
+
+    <!-- Form Upload CSV Data Intake -->
+    <div class="bg-white shadow-sm rounded-xl p-6 mb-8 border border-gray-100 border-l-4 border-indigo-600">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <h4 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                    <span>📤</span> Intake Data Peserta Pelatihan Vokasi (SIAPkerja / SiapLatih)
+                </h4>
+                <p class="text-sm text-gray-500 mt-1">Unggah file CSV pendaftaran peserta untuk mengkategorikan diagnosis kuadran (K1-K4) dan mendistribusikan data ke Instruktur & Pengantar Kerja.</p>
+            </div>
+        </div>
+
+        <form wire:submit.prevent="importCsv" class="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <input type="file" wire:model="csvFile" accept=".csv,.txt" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 border border-gray-300 rounded-lg p-1.5">
+            <button type="submit" wire:loading.attr="disabled" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg shadow transition whitespace-nowrap disabled:opacity-50">
+                <span wire:loading.remove wire:target="importCsv">🚀 Import CSV Data</span>
+                <span wire:loading wire:target="importCsv">⏳ Mengunggah & Memproses...</span>
+            </button>
+        </form>
+        @error('csvFile') <span class="text-red-500 text-xs block mt-2">{{ $message }}</span> @enderror
+    </div>
 
     <!-- Matriks Penyaluran & Job Matching -->
     <div class="bg-white shadow rounded-lg p-6 border-t-4 border-teal-500">

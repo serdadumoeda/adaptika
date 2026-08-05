@@ -3,13 +3,17 @@
 namespace App\Livewire\Pemberdayaan;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class DashboardPemberdayaan extends Component
 {
+    use WithFileUploads;
+
     public $pesertaId;
     public $aiRecommendation = null;
     public $catatan = '';
     public $statusKelulusan = 'Kompeten';
+    public $csvFile;
 
     public function boot()
     {
@@ -85,5 +89,22 @@ class DashboardPemberdayaan extends Component
 
         session()->flash('message_salur', 'Keputusan penyaluran berhasil ditetapkan.');
         $this->reset(['pesertaId', 'aiRecommendation', 'catatan']);
+    }
+
+    public function importCsv()
+    {
+        $this->validate(['csvFile' => 'required|mimes:csv,txt|max:4096']);
+
+        $path = $this->csvFile->storeAs('csv_imports', 'import_' . time() . '.csv');
+        $fullPath = storage_path('app/private/' . $path);
+        if (!file_exists($fullPath)) {
+            $fullPath = storage_path('app/' . $path);
+        }
+
+        // Process synchronously so data is immediately saved in DB on Vercel
+        (new \App\Jobs\ImportPesertaCsvJob($fullPath))->handle();
+
+        session()->flash('message_salur', '✅ File CSV data peserta berhasil diunggah dan di-import ke sistem!');
+        $this->reset('csvFile');
     }
 }

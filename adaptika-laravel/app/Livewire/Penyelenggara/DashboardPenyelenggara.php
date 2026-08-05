@@ -132,9 +132,9 @@ class DashboardPenyelenggara extends Component
             $fullPath = storage_path('app/' . $path);
         }
 
-        \App\Jobs\ImportPesertaCsvJob::dispatch($fullPath);
+        (new \App\Jobs\ImportPesertaCsvJob($fullPath))->handle();
 
-        session()->flash('message', 'File CSV berhasil diunggah dan sedang diproses di latar belakang. Silakan muat ulang halaman setelah beberapa saat.');
+        session()->flash('message', 'File CSV berhasil diunggah dan data peserta berhasil di-import ke sistem!');
         $this->reset('csvFile');
         return redirect()->route('dashboard');
     }
