@@ -48,5 +48,19 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('access-pemberdayaan', function (User $user) {
             return in_array($user->role, ['Superadmin', 'Seksi Pemberdayaan']);
         });
+
+        Gate::define('download-laporan', function (User $user) {
+            return in_array($user->role, ['Superadmin', 'Penyelenggara', 'Kepala Balai', 'Instruktur Teknis', 'Pengantar Kerja', 'Seksi Pemberdayaan']);
+        });
+
+        Gate::define('download-career-passport', function (User $user, \App\Models\Peserta $peserta) {
+            if (in_array($user->role, ['Superadmin', 'Penyelenggara', 'Kepala Balai', 'Instruktur Teknis', 'Pengantar Kerja', 'Seksi Pemberdayaan'])) {
+                return true;
+            }
+            if ($user->role === 'Peserta Pelatihan') {
+                return $user->peserta_id == $peserta->id || $user->name === $peserta->nama;
+            }
+            return false;
+        });
     }
 }

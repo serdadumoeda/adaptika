@@ -5,13 +5,16 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/login');
 
 Route::get('/clean-data', function () {
+    if (!app()->environment('local')) {
+        abort(404);
+    }
     \App\Models\Peserta::query()->delete();
     \App\Models\Intervensi::query()->delete();
     if (\Illuminate\Support\Facades\Schema::hasTable('notifications')) {
         \Illuminate\Support\Facades\DB::table('notifications')->delete();
     }
     return response("✅ SUKSES: Seluruh data peserta dan intervensi telah dibersihkan dari database! Jumlah peserta saat ini: " . \App\Models\Peserta::count(), 200);
-});
+})->middleware(['auth', 'can:is-superadmin']);
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -22,6 +25,7 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::get('/download/laporan-kesiapan', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Gate::authorize('download-laporan');
     try {
         $kejuruan = $request->query('kejuruan');
         $query = \App\Models\Peserta::query();
@@ -44,6 +48,7 @@ Route::get('/download/laporan-kesiapan', function (\Illuminate\Http\Request $req
 })->middleware(['auth'])->name('download.laporan-kesiapan');
 
 Route::get('/download/career-passport/{peserta}', function (\App\Models\Peserta $peserta) {
+    \Illuminate\Support\Facades\Gate::authorize('download-career-passport', $peserta);
     try {
         $prompt = "Nama Peserta: {$peserta->nama}\nKejuruan: {$peserta->kejuruan}\nProfil RIASEC: {$peserta->profil_riasec} ({$peserta->kode_riasec})\nTugas: Buat narasi adaptabilitas positif yang menjual (HR-friendly) tentang bagaimana karakter bawaannya ini membuat dia sukses mempraktikkan skill {$peserta->kejuruan} di dunia kerja, serta rekomendasikan 2 ekosistem industri spesifik yang cocok untuknya.";
         $aiService = new \App\Services\AiEngineService();

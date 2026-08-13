@@ -88,15 +88,71 @@
             </div>
             @endif
 
-            <div class="flex items-center space-x-3">
+            <div class="flex flex-wrap items-center gap-3">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg shadow font-semibold transition">
                     💾 {{ $editingUserId ? 'Simpan Perubahan' : 'Buat Pengguna' }}
                 </button>
+                @if(!$editingUserId)
+                <button type="button" wire:click.prevent="createInvitationUser" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg shadow font-semibold transition">
+                    🔗 Buat & Dapatkan Link Undangan
+                </button>
+                @endif
                 <button type="button" wire:click="$set('showForm', false)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-semibold transition">
                     Batal
                 </button>
             </div>
         </form>
+    </div>
+    @endif
+
+    {{-- Modal Link Undangan --}}
+    @if ($showInvitationModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4" x-data="{ copied: false }">
+        <div class="bg-white rounded-2xl shadow-2xl border border-indigo-100 max-w-lg w-full p-6 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl font-bold">
+                        🔗
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg text-slate-800">Link Undangan & Reset Password</h4>
+                        <p class="text-xs text-slate-500">Bagikan link ini langsung ke Instruktur / Pengguna</p>
+                    </div>
+                </div>
+                <button wire:click="closeInvitationModal" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div><span class="text-slate-400">Nama:</span> <strong class="text-slate-800">{{ $invitationUserName }}</strong></div>
+                    <div><span class="text-slate-400">Email:</span> <strong class="text-slate-800">{{ $invitationUserEmail }}</strong></div>
+                    <div><span class="text-slate-400">Role:</span> <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 font-bold">{{ $invitationUserRole }}</span></div>
+                    @if($invitationUserKejuruan)
+                    <div><span class="text-slate-400">Kejuruan:</span> <strong class="text-indigo-600">{{ $invitationUserKejuruan }}</strong></div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">URL Undangan Aktif (Instruktur Tinggal Set Password)</label>
+                <div class="flex items-center space-x-2">
+                    <input type="text" readonly value="{{ $invitationUrl }}" class="w-full bg-slate-100 border border-slate-300 rounded-lg text-xs p-2.5 font-mono text-slate-800 focus:outline-none select-all">
+                    <button type="button" 
+                            x-on:click="navigator.clipboard.writeText('{{ $invitationUrl }}'); copied = true; setTimeout(() => copied = false, 3000)"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold transition flex items-center shrink-0">
+                        <span x-show="!copied">📋 Salin Link</span>
+                        <span x-show="copied" x-cloak class="text-green-300">✅ Disalin!</span>
+                    </button>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">💡 Instruktur yang membuka link di atas dapat langsung membuat password baru tanpa perlu verifikasi email server (SMTP).</p>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <button type="button" wire:click="closeInvitationModal" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-xs font-semibold transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
     </div>
     @endif
 
@@ -152,6 +208,7 @@
                     </td>
                     <td class="px-4 py-3 text-center">
                         <div class="flex justify-center space-x-1">
+                            <button wire:click="generateInvitationLink({{ $u->id }})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-xs font-semibold transition border border-indigo-200" title="Salin Link Undangan / Reset Password">🔗 Link</button>
                             <button wire:click="openEditForm({{ $u->id }})" class="bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-semibold transition border border-blue-200" title="Edit">✏️</button>
                             <button wire:click="resetPassword({{ $u->id }})" class="bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs font-semibold transition border border-yellow-200" title="Reset Password" wire:confirm="Reset password '{{ $u->name }}' ke default?">🔑</button>
                             @if($u->id !== auth()->id())

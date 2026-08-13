@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use App\Models\User;
 use App\Models\Peserta;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -23,6 +25,14 @@ class ManajemenUser extends Component
     public $search = '';
     public $peserta_id = '';
 
+    // Modals & Invitation Link Properties
+    public $showInvitationModal = false;
+    public $invitationUrl = '';
+    public $invitationUserName = '';
+    public $invitationUserEmail = '';
+    public $invitationUserRole = '';
+    public $invitationUserKejuruan = '';
+
     protected $roles = [
         'Superadmin',
         'Penyelenggara',
@@ -40,7 +50,7 @@ class ManajemenUser extends Component
 
     public function render()
     {
-        $query = User::query();
+        $query = User::with('peserta');
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
@@ -146,6 +156,61 @@ class ManajemenUser extends Component
         }
 
         $this->resetForm();
+    }
+
+    public function createInvitationUser()
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'role' => 'required|string',
+            'assigned_kejuruan' => 'nullable|string|max:255',
+            'assigned_program' => 'nullable|string|max:255',
+            'peserta_id' => 'nullable|exists:pesertas,id',
+        ];
+
+        $this->validate($rules);
+
+        $finalPesertaId = ($this->role === 'Peserta Pelatihan' && $this->peserta_id) ? $this->peserta_id : null;
+
+        $user = User::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => Hash::make(Str::random(16)),
+            'role' => $this->role,
+            'assigned_kejuruan' => $this->assigned_kejuruan ?: null,
+            'assigned_program' => $this->assigned_program ?: null,
+            'peserta_id' => $finalPesertaId,
+        ]);
+
+        $token = Password::createToken($user);
+        $this->invitationUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+        $this->invitationUserName = $user->name;
+        $this->invitationUserEmail = $user->email;
+        $this->invitationUserRole = $user->role;
+        $this->invitationUserKejuruan = $user->assigned_kejuruan;
+        $this->showInvitationModal = true;
+
+        session()->flash('message_user', "Pengguna '{$user->name}' berhasil dibuat! Link undangan siap dibagikan.");
+        $this->resetForm();
+    }
+
+    public function generateInvitationLink($userId)
+    {
+        $user = User::findOrFail($userId);
+        $token = Password::createToken($user);
+        $this->invitationUrl = route('password.reset', ['token' => $token, 'email' => $user->email]);
+        $this->invitationUserName = $user->name;
+        $this->invitationUserEmail = $user->email;
+        $this->invitationUserRole = $user->role;
+        $this->invitationUserKejuruan = $user->assigned_kejuruan;
+        $this->showInvitationModal = true;
+    }
+
+    public function closeInvitationModal()
+    {
+        $this->showInvitationModal = false;
+        $this->invitationUrl = '';
     }
 
     public function deleteUser($userId)
